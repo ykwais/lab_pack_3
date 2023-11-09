@@ -11,6 +11,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
 
     char arr_str[COUNT_STR][MAX_LENGTH_STR];
     char name_group[50];
+    char first_uint[100];
     int first;
     int arr_mark[5];
     int c;
@@ -18,7 +19,13 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
     int counter_of_students = 0;
 
 
-    while(fscanf(file, "%u", &current_id) == 1){
+    while(fscanf(file, "%s", first_uint) == 1){
+
+        char* endptr;
+        current_id = strtoul(first_uint, &endptr, 10);
+        if (endptr == first_uint || first_uint[0] == '-') {
+            return ic_invalid_string;
+        }
 
         if(current_id <= UINT_MAX-1 && current_id > 0){
 

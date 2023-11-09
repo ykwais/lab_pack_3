@@ -63,7 +63,15 @@ int main(int argc, char** argv) {
     {
         printf("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n1 - search by id\n2 - search by surname\n3 - search by name\n4 - search by group\n5 - sort by id\n6 - sort by surname\n7 - sort by name\n8 - sort by group\n9 - students with high average\n10 - exit\n");
         ui choice = 0;
-        scanf("%u", &choice);
+        char str[100];
+        fflush(stdin);
+        scanf("%s", str);
+        char* endptr;
+        choice = strtoul(str, &endptr, 10);
+        if (endptr == str) {
+            printf("not number\n");
+            break;
+        }
         if(choice == 10){
             printf("bye\n");
             break;
@@ -99,7 +107,8 @@ int main(int argc, char** argv) {
             case 2:
                 printf("Enter the surname of student:\n");
                 char last_name[100];
-                scanf("%s", last_name);
+                fflush(stdin);
+                scanf_s("%99s", last_name, 99);
 
                 for(int i = 0; i < count_students; ++i){
                     if(strcmp(list_of_students[i].surname, last_name) == 0){
@@ -119,7 +128,8 @@ int main(int argc, char** argv) {
             case 3:
                 printf("Enter the name of student:\n");
                 char name[100];
-                scanf("%s", name);
+                fflush(stdin);
+                scanf_s("%99s", name, 99);
 
                 for(int i = 0; i < count_students; ++i){
                     if(strcmp(list_of_students[i].name, name) == 0){
@@ -139,7 +149,8 @@ int main(int argc, char** argv) {
             case 4:
                 printf("Enter the group of student:\n");
                 char group[100];
-                scanf("%s", group);
+                fflush(stdin);
+                scanf_s("%99s", group, 99);
 
                 for(int i = 0; i < count_students; ++i){
                     if(strcmp(list_of_students[i].group, group) == 0){
