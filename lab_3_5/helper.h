@@ -42,5 +42,6 @@ int compare_by_surname(const void *a, const void *b);
 int compare_by_name(const void *a, const void *b);
 int compare_by_group(const void *a, const void *b);
 void print_student(Student *student, FILE* file);
+void print_average_grades(Student *students, int count, FILE *file);
 
 #endif //LAB_3_5_HELPER_H

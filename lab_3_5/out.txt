@@ -1,0 +1,6 @@
+
+the total average: 3.533333
+name: kkk, surname: z, average score: 5.000000
+name: tex, surname: zaya, average score: 4.200000
+ID: 5, Name: tex, Surname: zaya, Group: dfjgh, the average score: 4.200000
+ID: 3, Name: kkk, Surname: z, Group: win, 

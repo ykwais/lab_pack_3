@@ -1,30 +1,6 @@
 #include "helper.h"
 #define hello
 
-void print_average_grades(Student *students, int count, FILE *file) {
-    int total_summ = 0;
-    int total_count = 0;
-    for (int i = 0; i < count; i++) {
-        for (int j = 0; j < 5; j++) {
-            total_summ += students[i].marks[j];
-        }
-        total_count += 5;
-    }
-    double total_average = (double)total_summ / total_count;
-    fprintf(file, "\nthe total average: %f\n", total_average);
-
-    for (int i = 0; i < count; i++) {
-        double student_average = 0;
-        for (int j = 0; j < 5; j++) {
-            student_average += students[i].marks[j];
-        }
-        student_average /= 5;
-        if (student_average > total_average) {
-            fprintf(file, "name: %s, surname: %s, average score: %f\n", students[i].name, students[i].surname, student_average);
-        }
-    }
-}
-
 int main(int argc, char** argv) {
     #ifndef hello
     printf("hello");
