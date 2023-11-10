@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <limits.h>
 
 #define COUNT_STR 2
 #define MAX_LENGTH_STR 100

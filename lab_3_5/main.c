@@ -65,7 +65,8 @@ int main(int argc, char** argv) {
         ui choice = 0;
         char str[100];
         fflush(stdin);
-        scanf("%s", str);
+        scanf("%99s", str);
+
         char* endptr;
         choice = strtoul(str, &endptr, 10);
         if (endptr == str) {
@@ -80,7 +81,15 @@ int main(int argc, char** argv) {
             case 1:
                 printf("Enter the id of student:\n");
                 ui id;
-                scanf("%u", &id);
+                char st[100];
+                fflush(stdin);
+                scanf("%99s",  st);
+                char* enddptr;
+                id = strtoul(st, &enddptr, 10);
+                if (enddptr == st) {
+                    printf("not unsigned int\n");
+                    break;
+                }
 
                 double average = 0;
                 for(int i = 0; i < count_students; ++i){
@@ -108,7 +117,7 @@ int main(int argc, char** argv) {
                 printf("Enter the surname of student:\n");
                 char last_name[100];
                 fflush(stdin);
-                scanf_s("%99s", last_name, 99);
+                scanf("%99s", last_name);
 
                 for(int i = 0; i < count_students; ++i){
                     if(strcmp(list_of_students[i].surname, last_name) == 0){
@@ -129,7 +138,7 @@ int main(int argc, char** argv) {
                 printf("Enter the name of student:\n");
                 char name[100];
                 fflush(stdin);
-                scanf_s("%99s", name, 99);
+                scanf("%99s", name);
 
                 for(int i = 0; i < count_students; ++i){
                     if(strcmp(list_of_students[i].name, name) == 0){
@@ -150,7 +159,7 @@ int main(int argc, char** argv) {
                 printf("Enter the group of student:\n");
                 char group[100];
                 fflush(stdin);
-                scanf_s("%99s", group, 99);
+                scanf("%99s", group);
 
                 for(int i = 0; i < count_students; ++i){
                     if(strcmp(list_of_students[i].group, group) == 0){
