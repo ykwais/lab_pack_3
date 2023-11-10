@@ -23,7 +23,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
 
         char* endptr;
         current_id = strtoul(first_uint, &endptr, 10);
-        if (endptr == first_uint || first_uint[0] == '-') {
+        if (endptr == first_uint || first_uint[0] == '-' || *endptr != '\0') {
             return ic_invalid_string;
         }
 

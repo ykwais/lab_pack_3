@@ -1,0 +1,6 @@
+ID: 5; Name: sdfsd; Surname: sdf; Money: 90.560000;
+ID: 4; Name: aasg; Surname: sdf; Money: 89.340000;
+ID: 3; Name: dfg; Surname: ghj; Money: 56.230000;
+ID: 1; Name: dfg; Surname: ghj; Money: 56.230000;
+ID: 6; Name: sd; Surname: af; Money: 11.000000;
+ID: 7; Name: fg; Surname: af; Money: 11.000000;

@@ -1,3 +1,6 @@
 # ninja log v5
-0	87	7212879744783546	CMakeFiles/lab_3_3.dir/main.c.obj	c0beab64ffb55f0a
-89	191	7212879745783796	lab_3_3.exe	99a39970240c256
+1	84	7213469791875003	CMakeFiles/lab_3_3.dir/main.c.obj	c0beab64ffb55f0a
+85	174	7213469792724996	lab_3_3.exe	99a39970240c256
+1	78	7213472181562084	CMakeFiles/lab_3_3.dir/main.c.obj	c0beab64ffb55f0a
+6	89	7213472181682516	CMakeFiles/lab_3_3.dir/funcs.c.obj	aa9a34e953f027da
+89	176	7213472182521745	lab_3_3.exe	49ff8fc67e35fb15
