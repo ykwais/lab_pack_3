@@ -1,1 +1,13 @@
+
+the total average: 3.685714
+name: ff, surname: dd, average score: 4.800000
+name: z, surname: z, average score: 4.800000
+name: tex, surname: zaya, average score: 4.200000
+ID: 1, Name: aaa, Surname: f, Group: 8f8, 
+ID: 3, Name: z, Surname: z, Group: 12win, the average score: 4.800000
 ID: 3, Name: z, Surname: z, Group: 12win, 
+
+the total average: 3.685714
+name: z, surname: z, average score: 4.800000
+name: tex, surname: zaya, average score: 4.200000
+name: ff, surname: dd, average score: 4.800000

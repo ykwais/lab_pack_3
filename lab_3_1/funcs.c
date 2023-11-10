@@ -31,8 +31,12 @@ cc kind_cc(int base, int* mask, int* in_left)
 
 memo number_to_cc(int number, int base, int* mask, int* in_left, char** result)
 {
-    char* answer = (char*) malloc(sizeof(char)*2);
-    int length = 2;
+    char* answer = (char*) malloc(sizeof(char));
+    if(answer == NULL){
+        return mem_bad;
+    }
+
+    int length = 1;
     int counter = 0;
     int start = 0;
 
@@ -52,16 +56,16 @@ memo number_to_cc(int number, int base, int* mask, int* in_left, char** result)
     }
 
     if(number < 0){
-        number *= -1;
+        number = add(~number, 1);//*-1
         answer[counter] = '-';
-        counter++;
+        counter = add(counter, 1);
         start = 1;
     }
 
     while(number > 0){
-        counter++;
+        counter = add(counter, 1);
         if( counter >= length){
-            length *= 2;
+            length <<= 2;
             char* tmp = realloc(answer, length);
             if(tmp == NULL){
                 free(answer);
@@ -73,7 +77,7 @@ memo number_to_cc(int number, int base, int* mask, int* in_left, char** result)
         int digit = *mask & number;
         number >>= *in_left;
 
-        answer[counter-1] = digit > 9 ? (char)(digit - 10 + 'A') : (char)(digit + '0');
+        answer[add(counter,-1)] = digit > 9 ? (char)(add(add(digit, - 10), 'A')) : (char)(add(digit,'0'));
 
     }
     reverse_string(&answer, start, counter);
@@ -94,3 +98,14 @@ void reverse_string(char** string, int start, int length){
         (*string)[j] = tmp;
     }
 }
+
+int add(int x, int y) {
+
+    while (y != 0) {
+        int carry = x & y;
+        x = x ^ y;
+        y = carry << 1;
+    }
+    return x;
+}
+

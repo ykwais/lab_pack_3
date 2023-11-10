@@ -5,8 +5,8 @@
 int main() {
     int mask = 0;
     int in_left = 0;
-    int num = -123456;////////////////////
-    int base = 2;//////////////////////
+    int num = -123;////////////////////
+    int base = 8;//////////////////////
     char* result = NULL;
 
     switch(number_to_cc(num, base, &mask, &in_left, &result)){

@@ -20,5 +20,6 @@ typedef enum mem_problem{
 cc kind_cc(int base, int* mask, int* in_left);
 memo number_to_cc(int number, int base, int* mask, int* in_left, char** result);
 void reverse_string(char** string, int start, int length);
+int add(int x, int y);
 
 #endif //LAB_3_1_HELPER_H
