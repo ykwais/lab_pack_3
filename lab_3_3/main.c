@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
             printf("wrong number of arguments!\n");
             return 0;
         case vs_problem_input:
-            printf("You've inputted invalid flag");
+            printf("You've inputted invalid flag\n");
             return 0;
         case vs_well:
             break;
