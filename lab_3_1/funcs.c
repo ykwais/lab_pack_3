@@ -2,7 +2,6 @@
 
 cc kind_cc(int base, int* mask, int* in_left)
 {
-
     if(base != 2 && base !=  4 && base != 8 && base != 16 && base != 32){
         return base_invalid;
     }
