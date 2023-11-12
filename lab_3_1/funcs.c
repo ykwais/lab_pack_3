@@ -2,47 +2,41 @@
 
 cc kind_cc(int base, int* mask, int* in_left)
 {
-    switch (base) {
-        case 2:
-            *mask = 1;
-            *in_left = 1;
-            return base_well;
-        case 4:
-            *mask = 3;
-            *in_left = 2;
-            return base_well;
-        case 8:
-            *mask = 7;
-            *in_left = 3;
-            return base_well;
-        case 16:
-            *mask = 15;
-            *in_left = 4;
-            return base_well;
-        case 32:
-            *mask = 31;
-            *in_left = 5;
-            return base_well;
-        default:
-            return base_invalid;
+
+    if(base != 2 && base !=  4 && base != 8 && base != 16 && base != 32){
+        return base_invalid;
     }
+    int two_value = 1;
+    int pow_value = 0;
+    while(two_value < base)
+    {
+        two_value <<= 1;
+        pow_value = add(pow_value, 1);
+    }
+    if(two_value == base){
+        *mask = add(two_value, add(~1, 1));
+        *in_left = pow_value;
+        return base_well;
+    }
+    return base_invalid;
 }
 
 
 memo number_to_cc(int number, int base, int* mask, int* in_left, char** result)
 {
-    char* answer = (char*) malloc(sizeof(char));
+    char* answer = (char*)calloc(2,sizeof(char));
     if(answer == NULL){
         return mem_bad;
     }
 
-    int length = 1;
+    int length = 2;
     int counter = 0;
     int start = 0;
 
 
     switch(kind_cc(base, mask ,in_left)){
         case base_invalid:
+            free(answer);
             return mem_invalid_base;
         case base_well:
             break;
@@ -77,7 +71,7 @@ memo number_to_cc(int number, int base, int* mask, int* in_left, char** result)
         int digit = *mask & number;
         number >>= *in_left;
 
-        answer[add(counter,-1)] = digit > 9 ? (char)(add(add(digit, - 10), 'A')) : (char)(add(digit,'0'));
+        answer[add(counter,-1)] = digit > 9 ? (char)(add(add(digit, add(~10, 1)), 'A')) : (char)(add(digit,'0'));
 
     }
     reverse_string(&answer, start, counter);
@@ -91,7 +85,7 @@ memo number_to_cc(int number, int base, int* mask, int* in_left, char** result)
 void reverse_string(char** string, int start, int length){
     int i = 0;
     int j = 0;
-    for ( i = start,  j = length - 1; i < j; i++, j--)
+    for ( i = start, j = length - 1; i < j; i++, j--)
     {
         int tmp = (*string)[i];
         (*string)[i] = (*string)[j];

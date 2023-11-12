@@ -1,6 +1,4 @@
-
 #include "helper.h"
-
 
 int main() {
     int mask = 0;
@@ -25,5 +23,3 @@ int main() {
 
     free(result);
 }
-
-
