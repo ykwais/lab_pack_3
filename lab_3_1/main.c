@@ -3,8 +3,8 @@
 int main() {
     int mask = 0;
     int in_left = 0;
-    int num = -1000;////////////////////
-    int base = 34;//////////////////////
+    int num = -123;////////////////////
+    int base = 17;//////////////////////
     char* result = NULL;
 
     switch(number_to_cc(num, base, &mask, &in_left, &result)){

@@ -13,7 +13,7 @@ cc kind_cc(int base, int* mask, int* in_left)
         pow_value = add(pow_value, 1);
     }
     if(two_value == base){
-        *mask = add(two_value, add(~1, 1));
+        *mask = add(two_value, negative(1));
         *in_left = pow_value;
         return base_well;
     }
@@ -49,7 +49,7 @@ memo number_to_cc(int number, int base, int* mask, int* in_left, char** result)
     }
 
     if(number < 0){
-        number = add(~number, 1);//*-1
+        number = negative(number);//*-1
         answer[counter] = '-';
         counter = add(counter, 1);
         start = 1;
@@ -70,7 +70,7 @@ memo number_to_cc(int number, int base, int* mask, int* in_left, char** result)
         int digit = *mask & number;
         number >>= *in_left;
 
-        answer[add(counter,-1)] = digit > 9 ? (char)(add(add(digit, add(~10, 1)), 'A')) : (char)(add(digit,'0'));
+        answer[add(counter,negative(1))] = digit > 9 ? (char)(add(add(digit, negative(10)), 'A')) : (char)(add(digit,'0'));
 
     }
     reverse_string(&answer, start, counter);
@@ -84,7 +84,7 @@ memo number_to_cc(int number, int base, int* mask, int* in_left, char** result)
 void reverse_string(char** string, int start, int length){
     int i = 0;
     int j = 0;
-    for ( i = start, j = length - 1; i < j; i++, j--)
+    for ( i = start, j = add(length,negative(1)); i < j; i = add(i, 1), j = add(j, negative(1)))
     {
         int tmp = (*string)[i];
         (*string)[i] = (*string)[j];
@@ -100,5 +100,9 @@ int add(int x, int y) {
         y = carry << 1;
     }
     return x;
+}
+
+int negative(int x){
+    return add(~x, 1);
 }
 
