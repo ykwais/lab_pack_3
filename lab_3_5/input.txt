@@ -1,5 +1,5 @@
-4 sdh A 1 2 3  4    5 sdfg
-1 aaa f 1 2 3 4 5   8f8
+4 petr an 1 2 3  4    5 211-Б
+1 vasya ivanov 1 2 3 4 5   8f8
 
 888 ff dd 5 5 5 5 4  12win
 3 z z 5 5  5 5 4  12win

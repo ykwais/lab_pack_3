@@ -1,13 +1,23 @@
 #include "helper.h"
-#define hello
+
+//TODO нужно проверить, что файл, в который записываю != тому, откуда считываю     ✓
+//TODO unsigned char для оценок ✓
+//TODO уникальные id
+//TODO проверить все free и fclose
+//TODO все через strtoud или такого рода
+//TODO тестинг Тиме
+
 
 int main(int argc, char** argv) {
-    #ifndef hello
-    printf("hello");
-    #endif
+
     if(argc != 3)
     {
         printf("wrong number of argc!\n");
+        return 0;
+    }
+
+    if(!strcmp(argv[1], argv[2])){
+        printf("You've inputted the same files!\n");
         return 0;
     }
 

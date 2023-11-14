@@ -18,7 +18,7 @@ typedef struct{
     char name[100];
     char surname[100];
     char group[50];
-    ui* marks;
+    unsigned char* marks;
 }Student;
 
 typedef enum input_code{

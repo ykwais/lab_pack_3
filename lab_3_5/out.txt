@@ -1,5 +1,1 @@
-
-the total average: 3.685714
-name: ff, surname: dd, average score: 4.800000
-name: z, surname: z, average score: 4.800000
-name: tex, surname: zaya, average score: 4.200000
+ID: 4, Name: petr, Surname: an, Group: 211-O, the average score: 3.000000
