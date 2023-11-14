@@ -2,7 +2,7 @@
 
 //TODO нужно проверить, что файл, в который записываю != тому, откуда считываю     ✓
 //TODO unsigned char для оценок ✓
-//TODO уникальные id
+//TODO уникальные id ✓
 //TODO проверить все free и fclose
 //TODO все через strtoud или такого рода
 //TODO тестинг Тиме
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
             free(list_of_students);
             return 0;
         case ic_invalid_string:
-            printf("An incorrect string of the student's first or last name was entered.\n");
+            printf("An incorrect string was entered.\n");
 
             free(list_of_students);
             return 0;
@@ -48,8 +48,12 @@ int main(int argc, char** argv) {
             free(list_of_students);
             return 0;
         case ic_mem_problem:
-            printf("mem problem");
+            printf("mem problem\n");
 
+            free(list_of_students);
+            return 0;
+        case ic_the_same_id:
+            printf("You've entered the same id!!!\n");
             free(list_of_students);
             return 0;
         case ic_well:
@@ -67,6 +71,7 @@ int main(int argc, char** argv) {
             free(list_of_students[i].marks);
         }
         free(list_of_students);
+        return 0;
     }
 
     while(1)
@@ -81,7 +86,7 @@ int main(int argc, char** argv) {
         choice = strtoul(str, &endptr, 10);
         if (endptr == str) {
             printf("not number\n");
-            break;
+            continue;
         }
         if(choice == 10){
             printf("bye\n");

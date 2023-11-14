@@ -1,1 +1,0 @@
-ID: 4, Name: petr, Surname: an, Group: 211-O, the average score: 3.000000

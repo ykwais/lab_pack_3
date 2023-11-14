@@ -26,7 +26,8 @@ typedef enum input_code{
     ic_problem_open_file,
     ic_invalid_string,
     ic_wrong_amount_lex,
-    ic_mem_problem
+    ic_mem_problem,
+    ic_the_same_id
 
 }input_status;
 

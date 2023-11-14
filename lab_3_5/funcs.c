@@ -29,6 +29,13 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
         }
 
         if(current_id <= UINT_MAX-1 && current_id > 0){
+            for(int i = 0; i < counter_of_students; ++i)
+            {
+                if(current_id == (*list)[i].id){
+                    fclose(file);
+                    return ic_the_same_id;
+                }
+            }
 
         }else{
             fclose(file);
@@ -39,7 +46,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
 
         for(int i = 0; i<COUNT_STR; ++i){
             if(fscanf(file, "%99s", arr_str[i]) == 1){
-                while ((c = fgetc(file)) != EOF && c != ' ' && c != '\n') {
+                while ((c = fgetc(file)) != EOF && c != ' ' && c != '\n' && c != '\t') {
                     counter++;
                 }
             }else{
@@ -97,7 +104,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
 
         strcpy((*list)[counter_of_students-1].name, arr_str[0]);
         strcpy((*list)[counter_of_students-1].surname, arr_str[1]);
-        (*list)[counter_of_students-1].marks = (unsigned char*)malloc(sizeof(unsigned char)*5);
+        (*list)[counter_of_students-1].marks = (unsigned char*)malloc(sizeof(unsigned char)*1000000000000000000);
         if((*list)[counter_of_students-1].marks == NULL){
             fclose(file);
             return ic_mem_problem;
