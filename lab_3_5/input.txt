@@ -1,11 +1,11 @@
-4 petr an 1 2 3  4   5 211-Б
+4 petr an 1 2 3  4   5 211-C
 1 vasya ivanov 1 2 3 4 5   8f8
-33 tima irisov 5 5 5 5 5  12win
-21 tima irisov 5 5 5 5 3  12win
+33 tima irisov 5 5 5 5 5  56_76
+21 cooper michalov 5 5 5 5 3  1000-7
 3 zzz zaycev 5 5  5 5 4  12win
 2 nigga jalap 5 4 3 2 4 gg
 5 tex latex 4 4 4 4 5 dfjgh
-1123253 hi a 3 3 3 3 3 s12ф
+1123253 hi a 3 3 3 3 3 s12k
 8
 alloc
 mem

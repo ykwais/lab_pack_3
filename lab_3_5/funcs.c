@@ -57,7 +57,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
         for(int i = 0; i<COUNT_STR; ++i){
             if(fscanf(file, "%99s", arr_str[i]) == 1){
                 while ((c = fgetc(file)) != EOF && c != ' ' && c != '\n' && c != '\t') {
-                    printf("you have mistakes Nigga\n");
+
                     counter++;
                 }
             }else{
@@ -93,13 +93,22 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
         }
 
 
+        counter = 0;
         if(fscanf(file, "%49s", name_group) == 1){
+            while ((c = fgetc(file)) != EOF && c != ' ' && c != '\n' && c != '\t') {
+
+                counter++;
+            }
 
         }else{
             fclose(file);
             *stud_count = counter_of_students;
             return ic_wrong_amount_lex;
 
+        }
+
+        if(counter > 0){
+            *len_lex = too_long_lexemma;
         }
 
         counter_of_students++;
