@@ -6,7 +6,8 @@
 //TODO проверить все free и fclose ✓
 //TODO все через strtoud или такого рода ✓
 //TODO обработка пустого файла ✓
-//TODO тестинг Тиме
+
+//TODO тестинг Тиме ✓
 
 
 int main(int argc, char** argv) {
