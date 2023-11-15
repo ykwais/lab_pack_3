@@ -6,6 +6,13 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
     if(!(file = fopen(filename, "r"))) {
         return ic_problem_open_file;
     }
+    int q = fgetc(file);
+    if(q == EOF){
+
+        return ic_empty_file;
+    }else{
+        fseek(file, 0, SEEK_SET);
+    }
 
     ui current_id = 0;
 
@@ -19,12 +26,13 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
     int counter_of_students = 0;
 
 
-    while(fscanf(file, "%s", first_uint) == 1){
+    while(fscanf(file, "%20s", first_uint) == 1){
 
         char* endptr;
         current_id = strtoul(first_uint, &endptr, 10);
         if (endptr == first_uint || first_uint[0] == '-' || *endptr != '\0') {
             fclose(file);
+            *stud_count = counter_of_students;
             return ic_invalid_string;
         }
 
@@ -33,24 +41,28 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
             {
                 if(current_id == (*list)[i].id){
                     fclose(file);
+                    *stud_count = counter_of_students;
                     return ic_the_same_id;
                 }
             }
 
         }else{
             fclose(file);
+            *stud_count = counter_of_students;
             return ic_invalid_string;
         }
 
 
-
+        counter = 0;
         for(int i = 0; i<COUNT_STR; ++i){
             if(fscanf(file, "%99s", arr_str[i]) == 1){
                 while ((c = fgetc(file)) != EOF && c != ' ' && c != '\n' && c != '\t') {
+                    printf("you have mistakes Nigga\n");
                     counter++;
                 }
             }else{
                 fclose(file);
+                *stud_count = counter_of_students;
                 return ic_wrong_amount_lex;
             }
         }
@@ -63,6 +75,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
             while(arr_str[i][j] != '\0') {
                 if (!isalpha(arr_str[i][j])) {
                     fclose(file);
+                    *stud_count = counter_of_students;
                     return ic_invalid_string;
                 }
                 j++;
@@ -74,6 +87,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
                 arr_mark[i] = first;
             }else{
                 fclose(file);
+                *stud_count = counter_of_students;
                 return ic_wrong_amount_lex;
             }
         }
@@ -83,6 +97,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
 
         }else{
             fclose(file);
+            *stud_count = counter_of_students;
             return ic_wrong_amount_lex;
 
         }
@@ -93,6 +108,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
             Student* tmp = (Student*)realloc(*list, sizeof(Student)*(*stud_count));
             if(tmp == NULL){
                 fclose(file);
+                *stud_count = counter_of_students;
                 return ic_mem_problem;
             }else{
                 *list = tmp;
@@ -104,9 +120,10 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
 
         strcpy((*list)[counter_of_students-1].name, arr_str[0]);
         strcpy((*list)[counter_of_students-1].surname, arr_str[1]);
-        (*list)[counter_of_students-1].marks = (unsigned char*)malloc(sizeof(unsigned char)*1000000000000000000);
+        (*list)[counter_of_students-1].marks = (unsigned char*)malloc(sizeof(unsigned char)*5);
         if((*list)[counter_of_students-1].marks == NULL){
             fclose(file);
+            *stud_count = counter_of_students;
             return ic_mem_problem;
         }else{
             for(int i = 0; i <5; ++i){
@@ -121,6 +138,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
     }
 
     if(fgetc(file) != EOF){
+        *stud_count = counter_of_students;
         fclose(file);
         return ic_wrong_amount_lex;
     }

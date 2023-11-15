@@ -1,0 +1,11 @@
+ID: 8, Name: alloc, Surname: mem, Group: r789-sd, the average score: 5.000000
+ID: 33, Name: tima, Surname: irisov, Group: 12win, the average score: 5.000000
+
+the total average: 4.060000
+name: zzz, surname: zaycev, average score: 4.800000
+name: tex, surname: latex, average score: 4.200000
+name: alloc, surname: mem, average score: 5.000000
+name: tima, surname: irisov, average score: 4.600000
+name: tima, surname: irisov, average score: 5.000000
+name: dfd, surname: dfd, average score: 4.400000
+ID: 2, Name: nigga, Surname: jalap, Group: gg, 

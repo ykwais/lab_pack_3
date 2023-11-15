@@ -3,8 +3,9 @@
 //TODO нужно проверить, что файл, в который записываю != тому, откуда считываю     ✓
 //TODO unsigned char для оценок ✓
 //TODO уникальные id ✓
-//TODO проверить все free и fclose
-//TODO все через strtoud или такого рода
+//TODO проверить все free и fclose ✓
+//TODO все через strtoud или такого рода ✓
+//TODO обработка пустого файла ✓
 //TODO тестинг Тиме
 
 
@@ -37,25 +38,65 @@ int main(int argc, char** argv) {
 
             free(list_of_students);
             return 0;
+
+        case ic_empty_file:
+            printf("You've inputted the empty file!\n");
+            free(list_of_students);
+            return 0;
+
         case ic_invalid_string:
             printf("An incorrect string was entered.\n");
 
+            if(count_students > 1)
+            {
+                for(int i = 0; i < count_students; ++i)
+                {
+                    free(list_of_students[i].marks);
+                }
+            }
             free(list_of_students);
             return 0;
+
         case ic_wrong_amount_lex:
             printf("The number of tokens in the input file is incorrect\n");
 
+            if(count_students > 1)
+            {
+                for(int i = 0; i < count_students; ++i)
+                {
+                    free(list_of_students[i].marks);
+                }
+            }
             free(list_of_students);
             return 0;
+
         case ic_mem_problem:
             printf("mem problem\n");
 
+            if(count_students > 1)
+            {
+                for(int i = 0; i < count_students; ++i)
+                {
+                    free(list_of_students[i].marks);
+                }
+            }
+
             free(list_of_students);
             return 0;
+
         case ic_the_same_id:
             printf("You've entered the same id!!!\n");
+
+            if(count_students > 1)
+            {
+                for(int i = 0; i < count_students; ++i)
+                {
+                    free(list_of_students[i].marks);
+                }
+            }
             free(list_of_students);
             return 0;
+
         case ic_well:
             if(is_well_lex == too_long_lexemma){
                 printf("The name, surname, or group string was entered too long. They have been reduced to an acceptable number of characters.\n");
@@ -121,7 +162,7 @@ int main(int argc, char** argv) {
 
                 }
                 if(coincidences == 0){
-                    printf("no such id\n");
+                    printf("no such id or not unsigned int\n");
                 }else{
                     printf("recorded\n");
                 }
