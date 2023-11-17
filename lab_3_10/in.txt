@@ -1,0 +1,3 @@
+A(B(c,D),K(L,M))
+A(B,C)
+A(B(C(Z,F,K),D),K,L)
