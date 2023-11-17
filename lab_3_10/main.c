@@ -85,9 +85,10 @@ int main(int argc, char** argv) {
 
         state st = st_well;
         node* root = get_root(strok, &st);
-        switch (st) {
+        switch (st){
             case mem_problem:
                 printf("problem with reallocation mem!\n");
+                free(strok);
                 fclose(in_file);
                 fclose(out_file);
                 return 0;
@@ -95,6 +96,7 @@ int main(int argc, char** argv) {
                 break;
             default:
                 printf("memes problem\n");
+                free(strok);
                 fclose(in_file);
                 fclose(out_file);
                 return 0;
@@ -107,7 +109,6 @@ int main(int argc, char** argv) {
         size = 2;
         free(strok);
         free_tree(root);
-
     }
 
     fclose(in_file);

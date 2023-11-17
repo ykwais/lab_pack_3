@@ -3,7 +3,6 @@
 input_status check_input(int argc, char** argv)
 {
     if(argc != 3){
-
         return ic_wrong_count_args;
     }
     if(!strcmp(argv[1], argv[2])){
@@ -55,7 +54,6 @@ void free_tree(node* root)
     {
         return;
     }
-
     free( root->arg);
 
     if (root->kid != NULL) {
@@ -73,8 +71,6 @@ void free_tree(node* root)
 node* create_node(char* str){
     node* new_node = (node*)malloc(sizeof(node));
     if(new_node == NULL){
-        //printf("meeeeeeem alloc prblem!\n");
-
         return NULL;
     }
 
@@ -84,7 +80,6 @@ node* create_node(char* str){
 
     return new_node;
 }
-
 
 
 node* get_root(const char* string, state* stat)
