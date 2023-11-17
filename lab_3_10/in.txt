@@ -1,3 +1,8 @@
+(a,b(j,h,t(p,t),r))
+(k,l)
+a,b,c,d(k,l)
 A(B(c,D),K(L,M))
 A(B,C)
 A(B(C(Z,F,K),D),K,L)
+A(B,C(K,L),D,E)
+a,b

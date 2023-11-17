@@ -4,6 +4,8 @@
 
 
 //TODO reallod for stack
+//TODO подумать о выводе дерева, если строки длинные
+//TODO стэк root - несколько корней (a,b)
 
 typedef struct node{
     char* arg;
@@ -21,8 +23,7 @@ typedef enum input_code{
 
 input_status check_input(int argc, char** argv);
 node* get_root(const char* string);
-//node* create_node(node* parent, char* str);
-//void add_child(node* parent, node* kid);
+node* create_node(char* str);
 void print_tree(node* root, FILE* outputFile, int depth);
 char* get_lexemma(const char* string, int* counter, const int* calcul);
 
@@ -105,6 +106,7 @@ int main(int argc, char** argv) {
         printf("%s\n", strok);
         node* root = get_root(strok);
         print_tree(root, out_file, 0);
+        fprintf(out_file, "==========================================================\n");
 
 
         counter = 0;
@@ -157,22 +159,7 @@ node* create_node(char* str){
     return new_node;
 }
 
-//void add_child(node* parent, node* kid)
-//{
-//    if(parent->children == NULL)
-//    {
-//        parent->children = kid;
-//        kid->parent = parent;
-//    }
-//    else{
-//        node* brother = parent->children;
-//        while(brother->bro != NULL){
-//            brother = brother->bro;
-//        }
-//        brother->bro = kid;
-//        kid->parent = parent;
-//    }
-//}
+
 
 node* get_root(const char* string)
 {
@@ -191,8 +178,16 @@ node* get_root(const char* string)
     {
 
         char c = string[calcul];
+        if(calcul == 0 && c == '('){
+            calcul++;
+            continue;
+        }
         if(c == '(')
         {
+//            if(calcul == 0){
+//                calcul++;
+//                continue;
+//            }
             int counter = 0;
             calcul++;
             char* str = get_lexemma(string, &counter, &calcul);
@@ -238,24 +233,46 @@ node* get_root(const char* string)
             }
 
 
+//            node* temp = tmp;
+//            while(tmp->bro != NULL)
+//            {
+//                tmp = tmp -> bro;
+//
+//            }
+//            tmp->bro = new_node;
+//            stack[top] = temp;
+
+
+
         }
         else if(c == ')')
         {
+            if(string[calcul+1] == '\0' && string[0] == '('){
+                calcul++;
+                continue;
+            }
             node* tmp_1 = stack[top];
             top--;
             node* tmp_2 = stack[top];
-            if(tmp_2->kid != NULL){
-                node* tmp_3 = tmp_2;
-                while(tmp_2->kid != NULL){
-                    tmp_2 = tmp_2->bro;
-                }
-                tmp_2->kid = tmp_1;
-                stack[top] = tmp_3;
+//            if(tmp_2->kid != NULL){
+//                node* tmp_3 = tmp_2;
+//                while(tmp_2->kid != NULL){
+//                    tmp_2 = tmp_2->bro;
+//                }
+//                tmp_2->kid = tmp_1;
+//                stack[top] = tmp_3;
+//            }
+//            else{
+//                tmp_2->kid = tmp_1;
+//                stack[top] = tmp_2;
+//            }
+
+            node* tmp_3 = tmp_2;
+            while(tmp_2->bro != NULL){
+                tmp_2 = tmp_2->bro;
             }
-            else{
-                tmp_2->kid = tmp_1;
-                stack[top] = tmp_2;
-            }
+            tmp_2->kid = tmp_1;
+            stack[top] = tmp_3;
 
             calcul++;
 
@@ -336,12 +353,22 @@ void print_tree(node* root, FILE* outputFile, int depth) {
 
     fprintf(outputFile, "%s\n", root->arg);
 
-    node* child = root->kid;
-    while (child != NULL) {
-        print_tree(child, outputFile, depth + 1);
-        child = child->bro;
+//    node* child = root->kid;
+//    while (child != NULL) {
+//        print_tree(child, outputFile, depth + 1);
+//        child = child->bro;
+//    }
+
+    if (root->kid != NULL) { // если у узла есть дети
+        print_tree(root->kid, outputFile, depth + 1); // рекурсивно выводим детей
     }
-//    fprintf(outputFile,"\n");
+
+    if (root->bro != NULL) { // если у узла есть братья
+        print_tree(root->bro, outputFile, depth); // рекурсивно выводим братьев на том же уровне
+    }
+
+    //print_tree()
+
 
 
 }
