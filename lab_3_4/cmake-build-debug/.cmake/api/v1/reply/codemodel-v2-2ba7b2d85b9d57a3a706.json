@@ -15,7 +15,8 @@
 					"source" : ".",
 					"targetIndexes" : 
 					[
-						0
+						0,
+						1
 					]
 				}
 			],
@@ -30,7 +31,8 @@
 					"name" : "lab_3_4",
 					"targetIndexes" : 
 					[
-						0
+						0,
+						1
 					]
 				}
 			],
@@ -41,6 +43,13 @@
 					"id" : "lab_3_4::@6890427a1f51a3e7e1df",
 					"jsonFile" : "target-lab_3_4-Debug-ac58b791e43d57d478e8.json",
 					"name" : "lab_3_4",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mail::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mail-Debug-9739a61f369b5a3c121c.json",
+					"name" : "mail",
 					"projectIndex" : 0
 				}
 			]
