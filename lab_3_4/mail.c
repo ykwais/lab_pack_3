@@ -18,6 +18,8 @@ typedef struct{
     string* mail_id;
     string* creation_time;
     string* time_get;
+    bool is_deliv;
+    string* time_deliv;
 }mail;
 
 typedef struct{
@@ -34,6 +36,7 @@ void print_status (state status);
 void clear_input_buffer();
 int read_and_convert_to_int(state* stat);
 double read_and_convert_to_doub(state* stat);
+char* get_current_time(state* stat);
 
 int main(){
 
@@ -124,18 +127,17 @@ void interact(post** pst)
                 free(city);
                 break;
             }
+            free(city);
 
             printf("input the street of getter:\n");
             char* street = read_line(&st);
             if(st != well){
                 print_status(st);
-                free(city);
                 free(new_mail.getter.city);
                 break;
             }
             if(street[0] == '\0'){
                 printf("street can't be empty!\n");
-                free(city);
                 free(street);
                 free(new_mail.getter.city);
                 continue;
@@ -143,25 +145,23 @@ void interact(post** pst)
             new_mail.getter.street = create_string(street, &st);
             if(st != well){
                 print_status(st);
-                free(city);
                 free(street);
+                free(new_mail.getter.city);
                 break;
             }
+            free(street);
+
 
             printf("input the house number of getter:\n");
             int num_house = read_and_convert_to_int(&st);
             if(st != well){
                 print_status(st);
-                free(city);
-                free(street);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 break;
             }
             if(num_house <= 0){
                 printf("number of house can't be negative!\n");
-                free(city);
-                free(street);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 continue;
@@ -173,16 +173,12 @@ void interact(post** pst)
             char* corp = read_line(&st);
             if(st != well){
                 print_status(st);
-                free(city);
-                free(street);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 break;
             }
             if(corp[0] == '\0'){
                 printf("street can't be empty!\n");
-                free(city);
-                free(street);
                 free(corp);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
@@ -191,21 +187,17 @@ void interact(post** pst)
             new_mail.getter.corp = create_string(corp, &st);
             if(st != well){
                 print_status(st);
-                free(city);
-                free(street);
                 free(corp);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 break;
             }
+            free(corp);
 
             printf("input the appartment number of getter:\n");
             int num_app = read_and_convert_to_int(&st);
             if(st != well){
                 print_status(st);
-                free(city);
-                free(street);
-                free(corp);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -213,9 +205,6 @@ void interact(post** pst)
             }
             if(num_app <= 0){
                 printf("number of appartment can't be negative!\n");
-                free(city);
-                free(street);
-                free(corp);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -228,9 +217,6 @@ void interact(post** pst)
             char* index = read_line(&st);
             if(st != well){
                 print_status(st);
-                free(city);
-                free(street);
-                free(corp);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -238,9 +224,7 @@ void interact(post** pst)
             }
             if(index[0] == '\0'){
                 printf("index can't be empty!\n");
-                free(city);
-                free(street);
-                free(corp);
+                free(index);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -248,9 +232,7 @@ void interact(post** pst)
             }
             if(strlen(index) != 6){
                 printf("index must have 6 symbols of digit!\n");
-                free(city);
-                free(street);
-                free(corp);
+                free(index);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -264,9 +246,7 @@ void interact(post** pst)
             }
             if(q != 0){
                 printf("index must have 6 symbols of digit!\n");
-                free(city);
-                free(street);
-                free(corp);
+                free(index);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -275,22 +255,18 @@ void interact(post** pst)
             new_mail.getter.index = create_string(index, &st);
             if(st != well){
                 print_status(st);
-                free(city);
-                free(street);
-                free(corp);
+                free(index);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
                 break;
             }
+            free(index);
 
             printf("Input the weight of mail:\n");
             double mail_weight = read_and_convert_to_doub(&st);
             if(st != well){
                 print_status(st);
-                free(city);
-                free(street);
-                free(corp);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -299,9 +275,6 @@ void interact(post** pst)
             }
             if(mail_weight < 0){
                 printf("weight can't be negative!\n");
-                free(city);
-                free(street);
-                free(corp);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -310,9 +283,6 @@ void interact(post** pst)
             }
             if(fabs(mail_weight - 40) > 0.1){
                 printf("We can deliver less than 40 kg.its too huge mail... sorry, we cant deliver this mail. Contact the shipping company\n ");
-                free(city);
-                free(street);
-                free(corp);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -321,6 +291,87 @@ void interact(post** pst)
             }
 
             new_mail.weight = mail_weight;
+
+            printf("Input the id of mail:\n");
+            char* mail_id = read_line(&st);
+            if(st != well){
+                print_status(st);
+                free(new_mail.getter.city);
+                free(new_mail.getter.street);
+                free(new_mail.getter.corp);
+                free(new_mail.getter.index);
+                break;
+            }
+            if(mail_id[0] == '\0'){
+                printf("the id of mail can't be empty!\n");
+                free(new_mail.getter.city);
+                free(new_mail.getter.street);
+                free(new_mail.getter.corp);
+                free(new_mail.getter.index);
+                continue;
+            }
+            if(strlen(mail_id) != 14){
+                printf("the id of mail must have 14 symbols of digit!\n");
+                free(new_mail.getter.city);
+                free(new_mail.getter.street);
+                free(new_mail.getter.corp);
+                free(new_mail.getter.index);
+                continue;
+            }
+
+            for(int i = 0; i < 14; ++i){
+                if(!isdigit(mail_id[i])){
+                    q++;
+                }
+            }
+            if(q != 0){
+                printf("the id of mail must have 14 symbols of digit!\n");
+                free(new_mail.getter.city);
+                free(new_mail.getter.street);
+                free(new_mail.getter.corp);
+                free(new_mail.getter.index);
+                continue;
+            }
+            new_mail.mail_id = create_string(mail_id, &st);
+            if(st != well){
+                print_status(st);
+//                free(city);
+//                free(street);
+//                free(corp);
+                free(new_mail.getter.city);
+                free(new_mail.getter.street);
+                free(new_mail.getter.corp);
+                free(new_mail.getter.index);
+                break;
+            }
+            free(mail_id);
+
+            char* create_time = get_current_time(&st);
+            if(st != well){
+                print_status(st);
+                free(new_mail.getter.city);
+                free(new_mail.getter.street);
+                free(new_mail.getter.corp);
+                free(new_mail.getter.index);
+                free(new_mail.mail_id);
+                break;
+            }
+
+            new_mail.creation_time = create_string(create_time, &st);
+            if(st != well){
+                print_status(st);
+                free(new_mail.getter.city);
+                free(new_mail.getter.street);
+                free(new_mail.getter.corp);
+                free(new_mail.getter.index);
+                free(new_mail.mail_id);
+                break;
+            }
+            free(create_time);
+
+            new_mail.is_deliv = false;
+            new_mail.time_deliv = NULL;
+
 
 
 
@@ -446,3 +497,24 @@ void clear_input_buffer() {
     while ((ch = getchar()) != '\n' && ch != EOF);
 }
 
+
+char* get_current_time(state* stat)
+{
+    time_t current_time;
+    struct tm *info;
+    char *buffer = (char *)malloc(sizeof(char)*20); // 20 символов для формата "dd:MM:yyyy hh:mm:ss"
+
+    if (buffer == NULL){
+        *stat = meme_problem;
+        return NULL;
+    }
+
+
+    time(&current_time);
+    info = localtime(&current_time);
+
+    strftime(buffer, 20, "%d:%m:%Y %H:%M:%S", info);
+
+    *stat = well;
+    return buffer;
+}
