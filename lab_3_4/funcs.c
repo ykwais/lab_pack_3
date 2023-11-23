@@ -44,6 +44,7 @@ void delete_string(string* in)
     }
 
     free(in);
+    in = NULL;
 
 }
 

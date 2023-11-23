@@ -17,10 +17,11 @@ typedef struct{
     double weight;
     string* mail_id;
     string* creation_time;
-    string* time_get;
     bool is_deliv;
     string* time_deliv;
 }mail;
+
+
 
 typedef struct{
     address* adress;
@@ -30,6 +31,8 @@ typedef struct{
 
 }post;
 
+
+
 void interact(post** pst);
 char* read_line(state* stat);
 void print_status (state status);
@@ -37,6 +40,10 @@ void clear_input_buffer();
 int read_and_convert_to_int(state* stat);
 double read_and_convert_to_doub(state* stat);
 char* get_current_time(state* stat);
+char* get_time_delivery(mail* new_mail, state* stat);
+state add_mail_to_post(post** pst, mail* cur_mail);
+void print_mail(mail* ml);
+void free_mail(mail ml);
 
 int main(){
 
@@ -71,6 +78,10 @@ int main(){
 
     interact(&pst);
 
+
+    for(int i = 0; i < pst->count_mail; ++i){
+        free_mail(pst->list_mails[i]);
+    }
     free(pst->list_mails);
     free(pst->adress);
     free(pst);
@@ -170,6 +181,7 @@ void interact(post** pst)
             new_mail.getter.number_house = num_house;
 
             printf("Input the corp of getter:\n");
+            //TODO - if there no corp!!! либо удалить 190 строку
             char* corp = read_line(&st);
             if(st != well){
                 print_status(st);
@@ -178,7 +190,7 @@ void interact(post** pst)
                 break;
             }
             if(corp[0] == '\0'){
-                printf("street can't be empty!\n");
+                printf("corp can't be empty!\n");
                 free(corp);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
@@ -281,8 +293,8 @@ void interact(post** pst)
                 free(new_mail.getter.index);
                 continue;
             }
-            if(fabs(mail_weight - 40) > 0.1){
-                printf("We can deliver less than 40 kg.its too huge mail... sorry, we cant deliver this mail. Contact the shipping company\n ");
+            if(fabs(mail_weight - 40) < 0.1){
+                printf("We can deliver more than 40 kg.its too huge mail... sorry, we cant deliver this mail. Contact the shipping company\n ");
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -332,12 +344,10 @@ void interact(post** pst)
                 free(new_mail.getter.index);
                 continue;
             }
+            //TODO search mail_id
             new_mail.mail_id = create_string(mail_id, &st);
             if(st != well){
                 print_status(st);
-//                free(city);
-//                free(street);
-//                free(corp);
                 free(new_mail.getter.city);
                 free(new_mail.getter.street);
                 free(new_mail.getter.corp);
@@ -372,8 +382,50 @@ void interact(post** pst)
             new_mail.is_deliv = false;
             new_mail.time_deliv = NULL;
 
+            char* deliver_time = get_time_delivery(&new_mail,&st);
+            if(st != well){
+                print_status(st);
+                free(new_mail.getter.city);
+                free(new_mail.getter.street);
+                free(new_mail.getter.corp);
+                free(new_mail.getter.index);
+                free(new_mail.mail_id);
+                free(new_mail.creation_time);
+                break;
+            }
 
+            new_mail.time_deliv = create_string(deliver_time, &st);
+            if(st != well){
+                print_status(st);
+                free(new_mail.getter.city);
+                free(new_mail.getter.street);
+                free(new_mail.getter.corp);
+                free(new_mail.getter.index);
+                free(new_mail.mail_id);
+                free(new_mail.creation_time);
+                break;
+            }
+            free(deliver_time);
 
+            new_mail.is_deliv = true;
+
+            st = add_mail_to_post(pst, &new_mail);
+            if(st != well){
+                print_status(st);
+                free(new_mail.getter.city);
+                free(new_mail.getter.street);
+                free(new_mail.getter.corp);
+                free(new_mail.getter.index);
+                free(new_mail.mail_id);
+                free(new_mail.creation_time);
+                free(new_mail.time_deliv);
+                break;
+            }
+            printf("well, your mail was successfully registrated and deliered!\n");
+            printf("==================================================================================================================================\n");
+            for(int i = 0; i < (*pst)->count_mail; ++i){
+                print_mail(&(*pst)->list_mails[i]);
+            }
 
         }
         else if(act == 'r'){
@@ -502,7 +554,7 @@ char* get_current_time(state* stat)
 {
     time_t current_time;
     struct tm *info;
-    char *buffer = (char *)malloc(sizeof(char)*20); // 20 символов для формата "dd:MM:yyyy hh:mm:ss"
+    char *buffer = (char *)malloc(sizeof(char)*20); //для формата "dd:MM:yyyy hh:mm:ss"
 
     if (buffer == NULL){
         *stat = meme_problem;
@@ -513,8 +565,108 @@ char* get_current_time(state* stat)
     time(&current_time);
     info = localtime(&current_time);
 
+    if (info == NULL) {
+        free(buffer);
+        *stat = meme_problem;
+        return NULL;
+    }
+
     strftime(buffer, 20, "%d:%m:%Y %H:%M:%S", info);
+    //buffer[20] = '\0';
 
     *stat = well;
     return buffer;
 }
+
+char* get_time_delivery(mail* new_mail, state* stat)
+{
+    time_t cur_time;
+    struct tm* info_delivery;
+    time(&cur_time);
+
+    time_t how_long;
+    if(new_mail->weight <= 2){
+        how_long = 60;
+    }else if(new_mail->weight > 2 && new_mail->weight < 7){
+        how_long = 180;
+    } else if(new_mail->weight >= 7 && new_mail->weight < 15 )
+    {
+        how_long = 300;
+    }
+    else{
+        how_long = 500;
+    }
+
+    time_t time_finish = cur_time + how_long;
+    info_delivery = localtime(&time_finish);
+    if (info_delivery == NULL) {
+        *stat = meme_problem;
+        return NULL;
+    }
+    char *buffer = (char *)malloc(sizeof(char)*20); // 19 символов для формата "dd:MM:yyyy hh:mm:ss"
+
+    if (buffer == NULL){
+        *stat = meme_problem;
+        return NULL;
+    }
+
+    strftime(buffer, 20, "%d:%m:%Y %H:%M:%S", info_delivery);
+    //buffer[20] = '\0';
+
+    *stat = well;
+    return buffer;
+
+}
+
+
+state add_mail_to_post(post** pst, mail* cur_mail)
+{
+    if(pst == NULL || cur_mail == NULL)
+    {
+        return invalid;
+    }
+    if((*pst)->count_mail >= (*pst)->buff)
+    {
+        (*pst)->buff += ADD;
+        mail* tmp = (mail*)realloc((*pst)->list_mails, sizeof(mail)*(*pst)->buff);
+        if(tmp == NULL){
+            return meme_problem;
+        }else{
+            (*pst)->list_mails = tmp;
+        }
+    }
+    (*pst)->list_mails[(*pst)->count_mail] = *cur_mail;
+    (*pst)->count_mail += 1;
+    //TODO qsort
+    return well;
+}
+
+void print_mail(mail* ml)
+{
+    printf("the city of getter: %s\n", ml->getter.city->arg != NULL ? ml->getter.city->arg : "UNKNOWN");
+    printf("the street of getter: %s\n", ml->getter.street->arg != NULL ? ml->getter.street->arg : "UNKNOWN");
+    printf("the house number of getter: %d\n", ml->getter.number_house);
+    printf("the corp of getter: %s\n", ml->getter.corp->arg != NULL ? ml->getter.corp->arg : "UNKNOWN");
+    printf("getter's number of appartment: %d\n", ml->getter.number_appartment);
+    printf("the index of getter: %s\n", ml->getter.index->arg != NULL ? ml->getter.index->arg : "UNKNOWN");
+    printf("the weqight of mail: %f\n", ml->weight);
+    printf("the id of mail: %s\n", ml->mail_id->arg != NULL ? ml->mail_id->arg : "UNKNOWN");
+    printf("the time of send: %s\n", ml->creation_time->arg != NULL ? ml->creation_time->arg : "UNKNOWN");
+    printf("was it delivered?: %s\n", ml->is_deliv ? "YEE" : "NO(");
+    printf("the time of send: %s\n", ml->time_deliv->arg != NULL ? ml->time_deliv->arg : "UNKNOWN");
+    printf("==================================================================================================================================\n");
+}
+
+
+void free_mail(mail ml)
+{
+    delete_string(ml.getter.city);
+    delete_string(ml.getter.street);
+    delete_string(ml.getter.corp);
+    delete_string(ml.getter.index);
+    delete_string(ml.mail_id);
+    delete_string(ml.creation_time);
+    delete_string(ml.time_deliv);
+    //free(ml);
+}
+

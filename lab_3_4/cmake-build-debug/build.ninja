@@ -94,6 +94,12 @@ build CMakeFiles/mail.dir/mail.c.obj: C_COMPILER__mail_Debug C$:/Users/fedor/mai
   OBJECT_DIR = CMakeFiles\mail.dir
   OBJECT_FILE_DIR = CMakeFiles\mail.dir
 
+build CMakeFiles/mail.dir/funcs.c.obj: C_COMPILER__mail_Debug C$:/Users/fedor/mai_labs_2/lab_pack_3/lab_3_4/funcs.c || cmake_object_order_depends_target_mail
+  DEP_FILE = CMakeFiles\mail.dir\funcs.c.obj.d
+  FLAGS = -g -std=gnu2x
+  OBJECT_DIR = CMakeFiles\mail.dir
+  OBJECT_FILE_DIR = CMakeFiles\mail.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target mail
@@ -102,7 +108,7 @@ build CMakeFiles/mail.dir/mail.c.obj: C_COMPILER__mail_Debug C$:/Users/fedor/mai
 #############################################
 # Link the executable mail.exe
 
-build mail.exe: C_EXECUTABLE_LINKER__mail_Debug CMakeFiles/mail.dir/mail.c.obj
+build mail.exe: C_EXECUTABLE_LINKER__mail_Debug CMakeFiles/mail.dir/mail.c.obj CMakeFiles/mail.dir/funcs.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\mail.dir
