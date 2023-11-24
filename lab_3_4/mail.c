@@ -1,7 +1,7 @@
 #include "helper.h"
 
 #define ADD 10
-
+//✓
 
 typedef struct{
     string* city;
@@ -131,7 +131,7 @@ void interact(post** pst)
 
         if(act == 'a'){
             mail new_mail;
-            printf("a\n");
+            printf("\n");
             printf("Input the main data to create mail:\n");
             printf("input the city of getter:\n");
             char* city = read_line(&st);
@@ -177,11 +177,17 @@ void interact(post** pst)
 
             printf("input the house number of getter:\n");
             int num_house = read_and_convert_to_int(&st);
-            if(st != well){
+            if(st == meme_problem){
                 print_status(st);
                 delete_string(new_mail.getter.city);
                 delete_string(new_mail.getter.street);
                 break;
+            }
+            if(st == invalid){
+                print_status(st);
+                delete_string(new_mail.getter.city);
+                delete_string(new_mail.getter.street);
+                continue;
             }
             if(num_house <= 0){
                 printf("number of house can't be negative!\n");
@@ -193,7 +199,7 @@ void interact(post** pst)
             new_mail.getter.number_house = num_house;
 
             printf("Input the corp of getter:\n");
-            //TODO - if there no corp!!! либо удалить 190 строку
+
             char* corp = read_line(&st);
             if(st != well){
                 print_status(st);
@@ -201,13 +207,7 @@ void interact(post** pst)
                 delete_string(new_mail.getter.street);
                 break;
             }
-            if(corp[0] == '\0'){
-                printf("corp can't be empty!\n");
-                free(corp);
-                delete_string(new_mail.getter.city);
-                delete_string(new_mail.getter.street);
-                continue;
-            }
+
             new_mail.getter.corp = create_string(corp, &st);
             if(st != well){
                 print_status(st);
@@ -220,12 +220,19 @@ void interact(post** pst)
 
             printf("input the appartment number of getter:\n");
             int num_app = read_and_convert_to_int(&st);
-            if(st != well){
+            if(st == meme_problem){
                 print_status(st);
                 delete_string(new_mail.getter.city);
                 delete_string(new_mail.getter.street);
                 delete_string(new_mail.getter.corp);
                 break;
+            }
+            if(st == invalid){
+                print_status(st);
+                delete_string(new_mail.getter.city);
+                delete_string(new_mail.getter.street);
+                delete_string(new_mail.getter.corp);
+                continue;
             }
             if(num_app <= 0){
                 printf("number of appartment can't be negative!\n");
@@ -289,13 +296,21 @@ void interact(post** pst)
 
             printf("Input the weight of mail:\n");
             double mail_weight = read_and_convert_to_doub(&st);
-            if(st != well){
+            if(st == meme_problem){
                 print_status(st);
                 delete_string(new_mail.getter.city);
                 delete_string(new_mail.getter.street);
                 delete_string(new_mail.getter.corp);
                 delete_string(new_mail.getter.index);
                 break;
+            }
+            if(st == invalid){
+                print_status(st);
+                delete_string(new_mail.getter.city);
+                delete_string(new_mail.getter.street);
+                delete_string(new_mail.getter.corp);
+                delete_string(new_mail.getter.index);
+                continue;
             }
             if(mail_weight < 0){
                 printf("weight can't be negative!\n");
@@ -305,8 +320,8 @@ void interact(post** pst)
                 delete_string(new_mail.getter.index);
                 continue;
             }
-            if(fabs(mail_weight - 40) < 0.1){
-                printf("We can deliver more than 40 kg.its too huge mail... sorry, we cant deliver this mail. Contact the shipping company\n ");
+            if(mail_weight > 80.0){
+                printf("We can deliver more than 80 kg.its too huge mail... sorry, we cant deliver this mail. Contact the shipping company\n ");
                 delete_string(new_mail.getter.city);
                 delete_string(new_mail.getter.street);
                 delete_string(new_mail.getter.corp);
@@ -359,7 +374,7 @@ void interact(post** pst)
                 free(mail_id);
                 continue;
             }
-            //TODO search mail_id ✓
+
             string* new_mail_id = create_string(mail_id, &st);
             if(st != well)
             {
@@ -480,13 +495,13 @@ void interact(post** pst)
             }
             printf("well, your mail was successfully registrated!\n");
             printf("==================================================================================================================================\n");
-            for(int i = 0; i < (*pst)->count_mail; ++i){
-                print_mail(&(*pst)->list_mails[i]);
-            }
+//            for(int i = 0; i < (*pst)->count_mail; ++i){
+//                print_mail(&(*pst)->list_mails[i]);
+//            }
 
         }
         else if(act == 'r'){
-            printf("r\n");
+            printf("\n");
             printf("Input the id of mail that you want to remove:\n");
             char* mail_id = read_line(&st);
             if(st != well){
@@ -553,17 +568,32 @@ void interact(post** pst)
 
             if(!((*pst)->list_mails[index].is_deliv)){
                 printf("this mail has not been delivered yet. You can't delete it from list of mails!\n");
+                free(mail_id);
+                delete_string(new_mail_id);
                 continue;
             }
 
-            //free_mail((*pst)->list_mails[index]);
+            free_mail((*pst)->list_mails[index]);
             for(int i = index; i < (*pst)->count_mail - 1; ++i)
             {
                 (*pst)->list_mails[i] = (*pst)->list_mails[i+1];
             }
 
-            free_mail((*pst)->list_mails[(*pst)->count_mail-1]);
+            //free(&(*pst)->list_mails[(*pst)->count_mail-1]);
             (*pst)->count_mail--;
+            mail* tmp = (mail*) realloc((*pst)->list_mails, sizeof(mail)*(*pst)->count_mail);
+            if(tmp == NULL)
+            {
+                st = meme_problem;
+                print_status(st);
+                free(mail_id);
+                delete_string(new_mail_id);
+                break;
+            }else{
+                (*pst)->list_mails = tmp;
+                (*pst)->buff = (*pst)->count_mail;
+            }
+
             printf("mail: %s was removed!\n", new_mail_id->arg);
             free(mail_id);
             delete_string(new_mail_id);
@@ -574,7 +604,7 @@ void interact(post** pst)
 
         }
         else if(act == 'u'){
-            printf("u\n");
+            printf("\n");
             printf("Input the id of mail that you want to set the delivery time:\n");
             char* mail_id = read_line(&st);
             if(st != well){
@@ -662,7 +692,7 @@ void interact(post** pst)
 
         }
         else if(act == 's'){
-            printf("s\n");
+            printf("\n");
             printf("Input the id of mail that you want to get information about:\n");
             char* mail_id = read_line(&st);
             if(st != well){
@@ -730,7 +760,7 @@ void interact(post** pst)
             continue;
         }
         else if(act == 'f'){
-            printf("f\n");
+            printf("\n");
             mail* delivered = NULL;
             mail* expired = NULL;
             int size1 = 0;
@@ -740,7 +770,7 @@ void interact(post** pst)
                 print_status(st);
                 break;
             }
-            printf("Delivered mails:\n");
+            printf("Delivered mails:\n\n");
             if(size1 == 0){
                 printf("there no such mails\n");
             }else{
@@ -749,13 +779,10 @@ void interact(post** pst)
                     print_mail(&delivered[i]);
                 }
             }
-//            for(int i = 0; i < size1; ++i)
-//            {
-//                free_mail(delivered[i]);
-//            }
+
             free(delivered);
 
-            printf("Expired mails:\n");
+            printf("Expired mails:\n\n");
             if(size2 == 0){
                 printf("there no such mails\n");
             }else{
@@ -764,16 +791,13 @@ void interact(post** pst)
                     print_mail(&expired[i]);
                 }
             }
-//            for(int i = 0; i < size2; ++i)
-//            {
-//                free_mail(expired[i]);
-//            }
+
             free(expired);
 
         }
         else if(act == 'i'){
             printf("i\n");
-            printf("the list of all mails:\n");
+            printf("the list of all mails:\n\n");
             if((*pst)->count_mail == 0){
                 printf("there no mails\n");
             }else {
@@ -787,7 +811,7 @@ void interact(post** pst)
             break;
         }
         else{
-            printf("you've inputted wrond action, rerun\n");
+            printf("you've inputted wrong action, rerun\n");
         }
 
     }
@@ -833,7 +857,7 @@ void print_status (state status)
             printf("Memory allocation problem\n");
             break;
         case invalid:
-            printf("Error: Free null ptr\n");
+            printf("You've inputted invalid data\n");
             break;
         default:
             break;
@@ -847,7 +871,9 @@ int read_and_convert_to_int(state* stat) {
         *stat = invalid;
         return 0;
     }
-    clear_input_buffer();
+    if (line[strlen(line) - 1] != '\n') {
+        clear_input_buffer();
+    }
 
     char *end;
     errno = 0;
@@ -867,7 +893,9 @@ double read_and_convert_to_doub(state* stat) {
         *stat = invalid;
         return 0.0;
     }
-    clear_input_buffer();
+    if (line[strlen(line) - 1] != '\n') {
+        clear_input_buffer();
+    }
 
     char *end;
     errno = 0;
@@ -974,7 +1002,6 @@ state add_mail_to_post(post** pst, mail* cur_mail)
     }
     (*pst)->list_mails[(*pst)->count_mail] = *cur_mail;
     (*pst)->count_mail += 1;
-    //TODO qsort ✓
     qsort((*pst)->list_mails, (*pst)->count_mail, sizeof(mail), compare_mail);
     return well;
 }
@@ -992,8 +1019,8 @@ void print_mail(mail* ml)
     printf("the time of send: %s\n", ml->creation_time->arg != NULL ? ml->creation_time->arg : "UNKNOWN");
     printf("was it delivered?: %s\n", ml->is_deliv ? "YEE" : "NO(");
     printf("the deadline of delivery: %s\n", ml->time_deliv_dead->arg != NULL ? ml->time_deliv_dead->arg : "UNKNOWN");
-    printf("the time of delivery: %s\n", ml->real_time_deliv != NULL ? ml->real_time_deliv->arg : "UNKNOWN");/////////////////////////////////TODO с учетом пустоты
-    printf("==================================================================================================================================\n");
+    printf("the time of delivery: %s\n", ml->real_time_deliv != NULL ? ml->real_time_deliv->arg : "UNKNOWN");
+    printf("==============================================================\n");
 }
 
 
@@ -1007,7 +1034,6 @@ void free_mail(mail ml)
     delete_string(ml.creation_time);
     delete_string(ml.time_deliv_dead);
     delete_string(ml.real_time_deliv);
-    //free(ml);
 }
 
 state_id search_mail(post** pst, string* mail_id, int* index)
@@ -1048,7 +1074,7 @@ state search_delivered_mails(post** pst, mail** delivered, mail** expired, int* 
     }
 
     int first_count = 0;
-    int secound_count = 0;
+    int second_count = 0;
     for(int i = 0; i < full_count; ++i)
     {
         if((*pst)->list_mails[i].is_deliv)
@@ -1059,30 +1085,21 @@ state search_delivered_mails(post** pst, mail** delivered, mail** expired, int* 
             state st = well;
             char* curr_time = get_current_time(&st);
             if(st != well){
-//                for(int j = 0; j < first_count; ++j)
-//                {
-//                    //free_mail((*delivered)[j]);
-//                    free(*delivered);
-//                }
-//                for(int j = 0; j < secound_count; ++j)
-//                {
-//                    //free_mail((*expired)[j]);
-//                    free(*expired);
-//                }
                 return st;
             }
-            if(strcmp((*pst)->list_mails[i].time_deliv_dead->arg, curr_time) < 0){
-                (*expired)[secound_count] = (*pst)->list_mails[i];
-                secound_count++;
+            //if()
+            if(strcmp((*pst)->list_mails[i].time_deliv_dead->arg, curr_time) < 0){////////////////////
+                (*expired)[second_count] = (*pst)->list_mails[i];
+                second_count++;
             }
             free(curr_time);
         }
 
     }
     qsort(*delivered, first_count, sizeof(mail), compare_mail_for_find);
-    qsort(*expired, secound_count, sizeof(mail), compare_mail_for_find);
+    qsort(*expired, second_count, sizeof(mail), compare_mail_for_find);
     *size1 = first_count;
-    *size2 = secound_count;
+    *size2 = second_count;
     return well;
 }
 
