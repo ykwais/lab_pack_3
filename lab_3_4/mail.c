@@ -495,9 +495,7 @@ void interact(post** pst)
             }
             printf("well, your mail was successfully registrated!\n");
             printf("==================================================================================================================================\n");
-//            for(int i = 0; i < (*pst)->count_mail; ++i){
-//                print_mail(&(*pst)->list_mails[i]);
-//            }
+
 
         }
         else if(act == 'r'){
