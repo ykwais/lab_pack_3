@@ -12,6 +12,20 @@ typedef enum status{
     invalid
 }state;
 
+typedef enum check_bus_time_arrive{
+    cb_well,
+    cb_invalid
+}check;
+
+typedef enum check_equal{
+    same_time_arrive,
+    same_time_departure,
+    same_time_all,
+    same_time_arriving_and_departure,
+    departure_less_arrive,
+    departure_more_than_arriving,
+    well_time
+}same_time;
 
 typedef enum input_code{
     ic_well,
@@ -54,158 +68,30 @@ typedef struct out_list{
     out_node* out_head;
 }out_list;
 
-void free_list_in(list* lst)
-{
-    in_node* tmp;
-    while(lst->in_head != NULL){
-        tmp = lst->in_head;
-        lst->in_head = lst->in_head->in_next;
-        free(tmp->bus->bus_id);
-        free(tmp->bus->arrive);
-        free(tmp->bus->departure);
-        free(tmp->bus);
 
-        free(tmp);
-    }
-
-}
-
-void free_list_global(out_list* list)
-{
-    out_node* tmp;
-    while (list->out_head != NULL){
-        tmp = list->out_head;
-        list->out_head = list->out_head->out_next;
-        free_list_in(&tmp->list_in_node);
-        free(tmp);
-    }
-}
-
-
-out_node* find_bus_number(out_list* list, char* number_bus)
-{
-    out_node* tmp = list->out_head;
-    while(tmp != NULL)
-    {
-        if(!(strcmp(tmp->list_in_node.in_head->bus->bus_id, number_bus))){
-            return tmp;
-        }
-        tmp = tmp->out_next;
-    }
-    return NULL;
-}
-
-
-in_node* create_in_node(Bus* bus)
-{
-    if(bus == NULL){
-        return NULL;
-    }
-    in_node* new_node = (in_node*)malloc(sizeof(in_node));
-    if(new_node == NULL){
-        return NULL;
-    }
-    new_node->bus = bus;
-    new_node->in_next = NULL;
-    return new_node;
-}
-
-out_node* create_out_node()
-{
-    out_node* new_node = (out_node*) malloc(sizeof(out_node));
-    if(new_node == NULL)
-    {
-        return NULL;
-    }
-    new_node->list_in_node.in_head = NULL;
-    new_node->out_next = NULL;
-    return new_node;
-}
-
-state add_in(list* in_list, Bus* bus)
-{
-    if(in_list == NULL || bus == NULL){
-        return invalid;
-    }
-
-    in_node* new_node = create_in_node(bus);
-    if(new_node == NULL){
-        return meme_problem;
-    }
-    if(in_list->in_head == NULL)
-    {
-        in_list->in_head = new_node;
-        return well;
-    }else{
-        in_node* tmp = in_list->in_head;
-        while (tmp->in_next != NULL){
-            tmp = tmp->in_next;
-        }
-        tmp->in_next = new_node;
-        return well;
-    }
-}
-
-state add_out(out_list* list, Bus* bus){
-    state st;
-    out_node* exist_node = find_bus_number(list, bus->bus_id);
-    if(exist_node == NULL){
-        out_node* new_node = create_out_node();
-        if( new_node == NULL){
-            return meme_problem;
-        }
-        st = add_in(&(new_node->list_in_node), bus);
-        if(st != well){
-            free(new_node);
-            return st;
-        }
-        if(list->out_head == NULL){
-            list->out_head = new_node;
-            return well;
-        }else{
-            out_node* tmp = list->out_head;
-            while(tmp->out_next != NULL){
-                tmp = tmp->out_next;
-            }
-            tmp->out_next = new_node;
-            return well;
-        }
-    }else{
-        st = add_in(&(exist_node->list_in_node), bus);
-        return st;
-    }
-}
-
-void print_in_list(list* lst){
-    in_node* tmp = lst->in_head;
-    while(tmp != NULL){
-        printf("number bus: %s\n", tmp->bus->bus_id != NULL ? tmp->bus->bus_id : "NONE");
-        printf("x_coordination: %lf\n", tmp->bus->x);
-        printf("y_coordination: %lf\n", tmp->bus->y);
-        printf("time arrive: %s\n", tmp->bus->arrive != NULL ? tmp->bus->arrive : "NONE");
-        printf("time departure: %s\n", tmp->bus->departure != NULL ? tmp->bus->departure : "NONE");
-        printf("the state of bus: %s\n", tmp->bus->st == start ? "START" : tmp->bus->st == finish ? "FINISH" : "MIDDLE");
-        tmp = tmp->in_next;
-    }
-}
-
-void print_all(out_list* list)
-{
-    int count = 0;
-    out_node* tmp = list->out_head;
-    while(tmp != NULL){
-        print_in_list(&(tmp->list_in_node));
-        printf("\nfinal %d\n", count + 1);
-        count++;
-        tmp = tmp->out_next;
-    }
-}
 
 
 double read_and_convert_to_doub(state* stat, FILE* file);
 void clear_input_buffer(FILE* file);
 input_status parsing_input_data(char* filename, out_list* list);
 char* read_line(state* stat, FILE* file);
+void print_all(out_list* list);
+void print_in_list(list* lst);
+state add_out(out_list* list, Bus* bus);
+state add_in(list* in_list, Bus* bus);
+out_node* create_out_node();
+in_node* create_in_node(Bus* bus);
+out_node* find_bus_number(out_list* list, char* number_bus);
+void free_list_global(out_list* list);
+void free_list_in(list* lst);
+check check_all(out_list* list);
+check check_in_list(list* lst);
+same_time check_time_bus(out_list* list);
+same_time check_time_bus_in_list(list* lst);
+
+
+
+
 
 
 int main(int argc, char** argv) {
@@ -216,13 +102,44 @@ int main(int argc, char** argv) {
     out_list main_list;
     main_list.out_head = NULL;
 
-
     for(int i = 1; i < argc; ++i){
 
         parsing_input_data(argv[i], &main_list);
 
     }
-
+    if(check_all(&main_list) == cb_invalid){
+        printf("incorrect data\n");
+        free_list_global(&main_list);
+        return 0;
+    }
+    switch(check_time_bus(&main_list)){
+        case same_time_arriving_and_departure:
+            printf("you've inputted the same arrive and departure time in one bus\n");
+            free_list_global(&main_list);
+            return 0;
+        case same_time_all:
+            printf("you've inputted the same time of arriving and departure for one bus\n");
+            free_list_global(&main_list);
+            return 0;
+        case same_time_departure:
+            printf("you've inputted the same time of departure\n");
+            free_list_global(&main_list);
+            return 0;
+        case same_time_arrive:
+            printf("you've inputted the same time of arriving\n");
+            free_list_global(&main_list);
+            return 0;
+        case departure_less_arrive:
+            printf("you've inputted departure time less arriving time for one bus\n");
+            free_list_global(&main_list);
+            return 0;
+        case departure_more_than_arriving:
+            printf("you've inputted departure time more or equal than some other arriving time\n");
+            free_list_global(&main_list);
+            return 0;
+        case well_time:
+            break;
+    }
     print_all(&main_list);
     free_list_global(&main_list);
 }
@@ -346,6 +263,7 @@ input_status parsing_input_data(char* filename, out_list* list) {
     while(st == well);
 
     fclose(file);
+    return ic_well;
 }
 
 void clear_input_buffer(FILE* file) {
@@ -412,4 +330,277 @@ char* read_line(state* stat, FILE* file)
     result[size] = '\0';
     *stat = well;
     return result;
+}
+
+void free_list_in(list* lst)
+{
+    in_node* tmp;
+    while(lst->in_head != NULL){
+        tmp = lst->in_head;
+        lst->in_head = lst->in_head->in_next;
+        free(tmp->bus->bus_id);
+        free(tmp->bus->arrive);
+        free(tmp->bus->departure);
+        free(tmp->bus);
+
+        free(tmp);
+    }
+
+}
+
+void free_list_global(out_list* list)
+{
+    out_node* tmp;
+    while (list->out_head != NULL){
+        tmp = list->out_head;
+        list->out_head = list->out_head->out_next;
+        free_list_in(&tmp->list_in_node);
+        free(tmp);
+    }
+}
+
+
+out_node* find_bus_number(out_list* list, char* number_bus)
+{
+    out_node* tmp = list->out_head;
+    while(tmp != NULL)
+    {
+        if(!(strcmp(tmp->list_in_node.in_head->bus->bus_id, number_bus))){
+            return tmp;
+        }
+        tmp = tmp->out_next;
+    }
+    return NULL;
+}
+
+
+in_node* create_in_node(Bus* bus)
+{
+    if(bus == NULL){
+        return NULL;
+    }
+    in_node* new_node = (in_node*)malloc(sizeof(in_node));
+    if(new_node == NULL){
+        return NULL;
+    }
+    new_node->bus = bus;
+    new_node->in_next = NULL;
+    return new_node;
+}
+
+out_node* create_out_node()
+{
+    out_node* new_node = (out_node*) malloc(sizeof(out_node));
+    if(new_node == NULL)
+    {
+        return NULL;
+    }
+    new_node->list_in_node.in_head = NULL;
+    new_node->out_next = NULL;
+    return new_node;
+}
+
+state add_in(list* in_list, Bus* bus)
+{
+    if(in_list == NULL || bus == NULL){
+        return invalid;
+    }
+
+    in_node* new_node = create_in_node(bus);
+    if(new_node == NULL){
+        return meme_problem;
+    }
+    if(in_list->in_head == NULL)
+    {
+        in_list->in_head = new_node;
+        return well;
+    }
+    else if(strcmp(in_list->in_head->bus->arrive, bus->arrive) > 0){////
+        new_node->in_next = in_list->in_head;
+        in_list->in_head = new_node;
+
+        return well;
+    }
+    else {
+        in_node* tmp = in_list->in_head;
+        while (tmp->in_next != NULL && strcmp(tmp->in_next->bus->arrive, bus->arrive) < 0){
+            tmp = tmp->in_next;
+        }
+        new_node->in_next = tmp->in_next;
+        tmp->in_next = new_node;
+
+        return well;
+    }
+}
+
+state add_out(out_list* list, Bus* bus){
+    state st;
+    out_node* exist_node = find_bus_number(list, bus->bus_id);
+    if(exist_node == NULL){
+        out_node* new_node = create_out_node();
+        if( new_node == NULL){
+            return meme_problem;
+        }
+        st = add_in(&(new_node->list_in_node), bus);
+        if(st != well){
+            free(new_node);
+            return st;
+        }
+        if(list->out_head == NULL){
+            list->out_head = new_node;
+            return well;
+        }else{
+            out_node* tmp = list->out_head;
+            while(tmp->out_next != NULL){
+                tmp = tmp->out_next;
+            }
+            tmp->out_next = new_node;
+            return well;
+        }
+    }else{
+        st = add_in(&(exist_node->list_in_node), bus);
+        return st;
+    }
+}
+
+void print_in_list(list* lst){
+    in_node* tmp = lst->in_head;
+    while(tmp != NULL){
+        printf("number bus: %s\n", tmp->bus->bus_id != NULL ? tmp->bus->bus_id : "NONE");
+        printf("x_coordination: %lf\n", tmp->bus->x);
+        printf("y_coordination: %lf\n", tmp->bus->y);
+        printf("time arrive: %s\n", tmp->bus->arrive != NULL ? tmp->bus->arrive : "NONE");
+        printf("time departure: %s\n", tmp->bus->departure != NULL ? tmp->bus->departure : "NONE");
+        printf("the state of bus: %s\n\n", tmp->bus->st == start ? "START" : tmp->bus->st == finish ? "FINISH" : "MIDDLE");
+        tmp = tmp->in_next;
+    }
+}
+
+
+same_time check_time_bus_in_list(list* lst){
+    in_node* tmp = lst->in_head;
+    while( tmp != NULL && tmp->in_next != NULL){
+        in_node* tmp2 = tmp->in_next;
+        int time_arr = strcmp(tmp->bus->arrive, tmp2->bus->arrive);
+        int time_depart = strcmp(tmp->bus->departure, tmp2->bus->departure);
+        int time_arr_and_dep = strcmp(tmp->bus->arrive, tmp->bus->departure);
+        if(time_arr == 0 && time_depart == 0){
+            return same_time_all;
+        }
+        if(time_arr == 0){
+            return same_time_arrive;
+        }
+        if(time_depart == 0){
+            return same_time_departure;
+        }
+        if(time_arr_and_dep == 0){
+            return same_time_arriving_and_departure;
+        }
+        if(time_arr_and_dep > 0){
+            return departure_less_arrive;
+        }
+        tmp = tmp->in_next;
+    }
+    in_node* temp = lst->in_head;
+    while(temp != NULL){
+        in_node* temp_2 = temp->in_next;
+        while(temp_2 != NULL){
+            if(strcmp(temp->bus->departure, temp_2->bus->departure) == 0){
+                return same_time_departure;
+            }
+            temp_2 = temp_2->in_next;
+        }
+        temp = temp->in_next;
+    }
+
+    tmp = lst->in_head;
+    while(tmp != NULL){
+        temp = tmp->in_next;
+        while(temp != NULL){
+            if(strcmp(temp->bus->arrive, tmp->bus->departure) <= 0){
+                return departure_more_than_arriving;
+            }
+            temp = temp->in_next;
+        }
+        tmp = tmp->in_next;
+    }
+
+    return well_time;
+}
+
+same_time check_time_bus(out_list* list)
+{
+    out_node* tmp = list->out_head;
+    while(tmp != NULL)
+    {
+        switch (check_time_bus_in_list(&(tmp->list_in_node))) {
+            case same_time_arriving_and_departure:
+                return same_time_arriving_and_departure;
+            case same_time_all:
+                return same_time_all;
+            case same_time_departure:
+                return same_time_departure;
+            case same_time_arrive:
+                return same_time_arrive;
+            case departure_less_arrive:
+                return departure_less_arrive;
+            case departure_more_than_arriving:
+                return departure_more_than_arriving;
+            case well_time:
+                break;
+
+        }
+        tmp = tmp->out_next;
+    }
+    return well_time;
+}
+
+
+check check_in_list(list* lst){
+    if(lst->in_head->bus->st != start){
+        return cb_invalid;
+    }
+    in_node* tmp = lst->in_head;
+    while(tmp->in_next != NULL){
+
+        tmp = tmp->in_next;
+        if(tmp->in_next == NULL){
+            break;
+        }
+        if(tmp->bus->st != middle){
+            return cb_invalid;
+        }
+    }
+    if(tmp->bus->st != finish){
+        return cb_invalid;
+    }
+    return cb_well;
+}
+
+check check_all(out_list* list){
+    out_node* tmp = list->out_head;
+    while(tmp != NULL){
+        switch (check_in_list(&(tmp->list_in_node))) {
+            case cb_invalid:
+                return cb_invalid;
+            case cb_well:
+                break;
+        }
+        tmp = tmp->out_next;
+    }
+    return cb_well;
+}
+
+
+
+void print_all(out_list* list)
+{
+    int count = 0;
+    out_node* tmp = list->out_head;
+    while(tmp != NULL){
+        print_in_list(&(tmp->list_in_node));
+        printf("\nfinal %d\n", count + 1);
+        count++;
+        tmp = tmp->out_next;
+    }
 }
