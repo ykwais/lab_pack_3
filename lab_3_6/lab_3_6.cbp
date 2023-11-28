@@ -76,6 +76,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6/funcs.c">
+			<Option target="lab_3_6"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6/helper.h">
+			<Option target="lab_3_6"/>
+		</Unit>
 		<Unit filename="/mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6/main.c">
 			<Option target="lab_3_6"/>
 		</Unit>

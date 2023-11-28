@@ -1,5 +1,5 @@
-CMakeFiles/lab_3_6.dir/main.c.o: \
- /mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6/main.c \
+CMakeFiles/lab_3_6.dir/funcs.c.o: \
+ /mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6/funcs.c \
  /usr/include/stdc-predef.h \
  /mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6/helper.h \
  /usr/include/stdio.h \
