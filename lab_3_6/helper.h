@@ -110,6 +110,7 @@ char* max_route_length_bus_id(out_list* list, state* st, char* type, double* len
 double longest_route(list* lst, char* type);
 char* diff_arr_dep(out_list* list, state* st, char* type, double* len);
 double diff_arr_dep_in(list* lst, char* type);
-
+char* stop_time(out_list* list, state* st, double* len);
+double stop_time_in(list* lst);
 
 #endif //LAB_3_6_HELPER_H
