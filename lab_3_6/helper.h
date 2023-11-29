@@ -43,7 +43,8 @@ typedef enum input_code{
     ic_invalid_string,
     ic_mem_problem,
     ic_empty_file,
-    ic_empty_str
+    ic_empty_str,
+    ic_same_coordination
 }input_status;
 
 typedef enum status_arriving{
@@ -113,5 +114,7 @@ char* diff_arr_dep(out_list* list, state* st, char* type, double* len);
 double diff_arr_dep_in(list* lst, char* type);
 char* stop_time(out_list* list, state* st, double* len);
 double stop_time_in(list* lst);
+int check_coordination_file(out_list* list, double x, double y);
+int check_coordination_file_in(list* lst, double x, double y);
 
 #endif //LAB_3_6_HELPER_H
