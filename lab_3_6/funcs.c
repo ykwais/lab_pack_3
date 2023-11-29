@@ -20,11 +20,19 @@ input_status parsing_input_data(char* filename, out_list* list) {
         fclose(file);
         return ic_invalid_string;
     }
+    if(st == empty_str){
+        fclose(file);
+        return ic_empty_str;
+    }
 
     y = read_and_convert_to_doub(&st, file);
     if (st == invalid) {
         fclose(file);
         return ic_invalid_string;
+    }
+    if(st == empty_str){
+        fclose(file);
+        return ic_empty_str;
     }
 
     do
@@ -138,8 +146,13 @@ double read_and_convert_to_doub(state* stat, FILE* file) {
         *stat = invalid;
         return 0.0;
     }
-    if (line[strlen(line) - 1] != '\n') {
+    int len = (int)strlen(line);
+    if (line[len - 1] != '\n') {
         clear_input_buffer(file);
+    }
+    if(line[0] == '\r' && line[1] == '\n'){
+        *stat = empty_str;
+        return 0.0;
     }
 
     char *end;
@@ -499,8 +512,6 @@ check check_all(out_list* list){
     }
     return cb_well;
 }
-
-
 
 void print_all(out_list* list)
 {

@@ -1,12 +1,24 @@
 #include "helper.h"
 
+out_list main_list;
+
+void signal_handler(int x){
+    if(x == SIGINT){
+        free_list_global(&main_list);
+    }
+    exit(0);
+}
+
 
 int main(int argc, char** argv) {
+
+    signal(SIGINT, signal_handler);
+
     if(argc < 2){
         printf("too few arguments\n");
     }
 
-    out_list main_list;
+    //out_list main_list;
     main_list.out_head = NULL;
 
     for(int i = 1; i < argc; ++i){
@@ -103,7 +115,10 @@ void interactive(out_list* list)
         printf("?-: ");
         char act;
         fflush(stdin);
-        scanf("%c", &act);
+        //scanf("%c", &act);
+        if(scanf("%c", &act) == EOF){
+            break;
+        }
         int c;
         if ((c = getchar()) != '\n' && c != EOF) {
             clear_input_buffer(stdin);

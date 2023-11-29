@@ -10,6 +10,7 @@
 #include <errno.h>
 #include <math.h>
 #include <limits.h>
+#include <signal.h>
 
 #define EPS 1e-5
 
