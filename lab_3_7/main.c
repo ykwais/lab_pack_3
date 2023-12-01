@@ -89,6 +89,7 @@ state add_undo_stack(undo_stack* stack, node* prev, type tp, node* current_in_li
 void delete_stack(undo_stack* stack);
 Liver* copy_liver(Liver* searchable);
 void print_undo_stack(undo_stack* stack);
+void delete_node_list(list* lst, node* tmp);
 
 list main_list;
 
@@ -157,7 +158,13 @@ int main(int argc, char** argv){
     }
 
     //print_list(&main_list, "stdout");
-    interactive(&main_list, &stack);
+    input_state status = interactive(&main_list, &stack);
+    if(status == is_mem_problem){
+        printf("memory problem!\n");
+        free_list(&main_list);
+        delete_stack(&stack);
+        return 0;
+    }
     free_list(&main_list);
     delete_stack(&stack);
 
@@ -193,6 +200,7 @@ input_state parsing_input_data(char* filename, list* lst) {
         if (count_token_in_full < 5 || count_token_in_full > 6) {
             fclose(file);
             free(one_full_string);
+            free(tmp);
             return is_wrong_amount_lex_in_str;
         }
         free(tmp);
@@ -581,6 +589,9 @@ void free_list(list* lst){
 }
 
 void print_list(list* lst, FILE* file){
+    if(lst->in_head == NULL){
+        printf("the list is empty!\n");
+    }
 
     node* tmp = lst->in_head;
     while(tmp != NULL){
@@ -679,22 +690,35 @@ input_state interactive(list* lst, undo_stack* stack){
             if(stack_liver == NULL){
                 return is_mem_problem;
             }
+
             node* temp = create_node(stack_liver);
             if(temp == NULL){
+                free_liver(stack_liver);
                 return is_mem_problem;
             }
 
             Liver* prev = copy_liver(current_node->liver);
             if(prev == NULL){
+                free_liver(temp->liver);
+                free(temp);
+
                 return is_mem_problem;
             }
             node* current_in_list = create_node(prev);
             if(current_node == NULL){
+                free_liver(temp->liver);
+                free(temp);
+                free_liver(prev);
                 return is_mem_problem;
             }
 
             state stt = add_undo_stack(stack, temp, add, current_in_list);
             if(stt != well){
+                free_liver(temp->liver);
+                free(temp);
+                free_liver(current_in_list->liver);
+                free(current_in_list);
+
                 return is_mem_problem;
             }
             print_undo_stack(stack);
@@ -749,6 +773,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         printf("\ninput the new surname of liver:\n");
                         surname = read_line(&st, stdin);
                         if(st == meme_problem){
+                            free_liver(searchable);
                             return is_mem_problem;
                         }
                         if(st == empty_str){
@@ -766,6 +791,8 @@ input_state interactive(list* lst, undo_stack* stack){
 
                     Liver* stack_liver = copy_liver(searchable);
                     if(stack_liver == NULL){
+                        free_liver(searchable);
+                        free(surname);
                         return is_mem_problem;
                     }
                     free_liver(searchable);
@@ -773,21 +800,29 @@ input_state interactive(list* lst, undo_stack* stack){
                     tmp->liver->surname = surname;
                     node* tmp2 = create_node(stack_liver);
                     if(tmp2 == NULL){
-                        //memory cleaning
+                        free_liver(stack_liver);
                         return is_mem_problem;
                     }
 
                     Liver* prev_liver = copy_liver(tmp->liver);
                     if(prev_liver == NULL){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
                         return is_mem_problem;
                     }
                     node* tmp3 = create_node(prev_liver);
                     if(tmp3 == NULL){
-                        //memory cle
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free(prev_liver);
                         return is_mem_problem;
                     }
                     state stt = add_undo_stack(stack, tmp2, modification, tmp3);
                     if(stt != well){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free_liver(tmp3->liver);
+                        free(tmp3);
                         return is_mem_problem;
                     }
                     printf("the surname was changed!\n");
@@ -801,6 +836,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         printf("\ninput the new name of liver:\n");
                         name = read_line(&st, stdin);
                         if(st == meme_problem){
+                            free(searchable);
                             return is_mem_problem;
                         }
                         if(st == empty_str){
@@ -818,29 +854,40 @@ input_state interactive(list* lst, undo_stack* stack){
 
                     Liver* stack_liver = copy_liver(searchable);
                     if(stack_liver == NULL){
+                        free(searchable);
+                        free(name);
                         return is_mem_problem;
                     }
                     free_liver(searchable);
                     free(tmp->liver->name);
                     tmp->liver->name = name;
+
                     node* tmp2 = create_node(stack_liver);
                     if(tmp2 == NULL){
-                        //mem deall
+                        free_liver(stack_liver);
                         return is_mem_problem;
                     }
 
 
                     Liver* prev_liver = copy_liver(tmp->liver);
                     if(prev_liver == NULL){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
                         return is_mem_problem;
                     }
                     node* tmp3 = create_node(prev_liver);
                     if(tmp3 == NULL){
-                        //memory cle
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free_liver(prev_liver);
                         return is_mem_problem;
                     }
                     state stt = add_undo_stack(stack, tmp2, modification, tmp3);
                     if(stt != well){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free_liver(tmp3->liver);
+                        free(tmp3);
                         return is_mem_problem;
                     }
                     printf("the name was changed!\n");
@@ -855,6 +902,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         printf("\ninput the new patronymic of liver:\n");
                         father_name = read_line(&st, stdin);
                         if(st == meme_problem){
+                            free_liver(searchable);
                             return is_mem_problem;
                         }
                         if(st == empty_str){
@@ -872,6 +920,8 @@ input_state interactive(list* lst, undo_stack* stack){
                     }
                     Liver* stack_liver = copy_liver(searchable);
                     if(stack_liver == NULL){
+                        free_liver(searchable);
+                        free(father_name);
                         return is_mem_problem;
                     }
                     free_liver(searchable);
@@ -879,22 +929,30 @@ input_state interactive(list* lst, undo_stack* stack){
                     tmp->liver->father_name = father_name;
                     node* tmp2 = create_node(stack_liver);
                     if(tmp2 == NULL){
-                        //mem deall
+                        free_liver(stack_liver);
                         return is_mem_problem;
                     }
 
 
                     Liver* prev_liver = copy_liver(tmp->liver);
                     if(prev_liver == NULL){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
                         return is_mem_problem;
                     }
                     node* tmp3 = create_node(prev_liver);
                     if(tmp3 == NULL){
-                        //memory cle
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free_liver(prev_liver);
                         return is_mem_problem;
                     }
                     state stt = add_undo_stack(stack, tmp2, modification, tmp3);
                     if(stt != well){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free(tmp3->liver);
+                        free(tmp3);
                         return is_mem_problem;
                     }
                     printf("the patronymic was changed!\n");
@@ -909,7 +967,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         printf("\ninput the new birth day of liver in format dd.mm.yyyy :\n");
                         birth_day = read_line(&st, stdin);
                         if(st == meme_problem){
-
+                            free_liver(searchable);
                             return is_mem_problem;
                         }
                         if(st == empty_str){
@@ -927,29 +985,51 @@ input_state interactive(list* lst, undo_stack* stack){
                     }
                     Liver* stack_liver = copy_liver(searchable);
                     if(stack_liver == NULL){
+                        free_liver(searchable);
+                        free(birth_day);
                         return is_mem_problem;
                     }
-                    free_liver(searchable);
-                    free(tmp->liver->birth_day);
-                    tmp->liver->birth_day = birth_day;
+                    //free_liver(searchable);
+                    //free(tmp->liver->birth_day);
+                    //tmp->liver->birth_day = birth_day;
                     node* tmp2 = create_node(stack_liver);
                     if(tmp2 == NULL){
-                        //mem deall
+                        free_liver(stack_liver);
                         return is_mem_problem;
                     }
 
+                    free(searchable->birth_day);
+                    searchable->birth_day = birth_day;
 
-                    Liver* prev_liver = copy_liver(tmp->liver);
+                    delete_node_list(lst, tmp);
+
+                    state sttt = add_node(lst, searchable);
+                    if(sttt != well){
+                        free_liver(searchable);
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        return is_mem_problem;
+                    }
+
+                    Liver* prev_liver = copy_liver(searchable);
                     if(prev_liver == NULL){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
                         return is_mem_problem;
                     }
                     node* tmp3 = create_node(prev_liver);
                     if(tmp3 == NULL){
-                        //memory cle
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free_liver(prev_liver);
                         return is_mem_problem;
                     }
                     state stt = add_undo_stack(stack, tmp2, modification, tmp3);
                     if(stt != well){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free_liver(tmp3->liver);
+                        free(tmp3);
                         return is_mem_problem;
                     }
                     printf("the date of birth was changed!\n");
@@ -960,6 +1040,7 @@ input_state interactive(list* lst, undo_stack* stack){
                 else if(choice == 'm'){
                     Liver* stack_liver = copy_liver(searchable);
                     if(stack_liver == NULL){
+                        free_liver(searchable);
                         return is_mem_problem;
                     }
                     free_liver(searchable);
@@ -972,22 +1053,30 @@ input_state interactive(list* lst, undo_stack* stack){
 
                     node* tmp2 = create_node(stack_liver);
                     if(tmp2 == NULL){
-                        //mem deall
+                        free_liver(stack_liver);
                         return is_mem_problem;
                     }
 
 
                     Liver* prev_liver = copy_liver(tmp->liver);
                     if(prev_liver == NULL){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
                         return is_mem_problem;
                     }
                     node* tmp3 = create_node(prev_liver);
                     if(tmp3 == NULL){
-                        //memory cle
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free_liver(prev_liver);
                         return is_mem_problem;
                     }
                     state stt = add_undo_stack(stack, tmp2, modification, tmp3);
                     if(stt != well){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free_liver(tmp3->liver);
+                        free(tmp3);
                         return is_mem_problem;
                     }
                     printf("the male was changed to reverse\n");
@@ -1002,7 +1091,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         printf("\ninput the new income of liver:\n");
                         char* income = read_line(&st, stdin);
                         if(st == meme_problem){
-
+                            free_liver(searchable);
                             return is_mem_problem;
                         }
                         if(st == empty_str){
@@ -1036,21 +1125,29 @@ input_state interactive(list* lst, undo_stack* stack){
                     tmp->liver->average_income = amount_income;
                     node* tmp2 = create_node(stack_liver);
                     if(tmp2 == NULL){
-                        //mem deall
+                        free_liver(stack_liver);
                         return is_mem_problem;
                     }
 
                     Liver* prev_liver = copy_liver(tmp->liver);
                     if(prev_liver == NULL){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
                         return is_mem_problem;
                     }
                     node* tmp3 = create_node(prev_liver);
                     if(tmp3 == NULL){
-                        //memory cle
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free_liver(prev_liver);
                         return is_mem_problem;
                     }
                     state stt = add_undo_stack(stack, tmp2, modification, tmp3);
                     if(stt != well){
+                        free_liver(tmp2->liver);
+                        free(tmp2);
+                        free_liver(tmp3->liver);
+                        free(tmp3);
                         return is_mem_problem;
                     }
                     printf("the average income was changed!\n");
@@ -1068,6 +1165,10 @@ input_state interactive(list* lst, undo_stack* stack){
             continue;
         }
         else if (act == 'd') {
+            if(lst->in_head == NULL){
+                printf("the list is empty!\n");
+                continue;
+            }
             printf("process of deleting a liver has been started\n");
             state stat = well;
             Liver* searchable = get_liver_stdin(&stat);
@@ -1077,7 +1178,7 @@ input_state interactive(list* lst, undo_stack* stack){
             node* tmp = find_same_liver(lst, searchable);
             if(tmp == NULL && lst->in_head != NULL){
                 free_liver(searchable);
-                printf("impossible to find such liver!\n");
+                printf("there no such liver!\n");
                 continue;
             }
 
@@ -1088,28 +1189,25 @@ input_state interactive(list* lst, undo_stack* stack){
             free_liver(searchable);
 
             node* tmp2 = create_node(stack_liver);
+            if(tmp2 == NULL){
+                free_liver(stack_liver);
+                return is_mem_problem;
+            }
             state stt = add_undo_stack(stack, tmp2, delete, NULL);//так как удалил
             if(stt != well){
+                free_liver(tmp2->liver);
+                free(tmp2);
                 return is_mem_problem;
             }
 
             print_undo_stack(stack);
 
-            node* temp = lst->in_head;
-            if(temp == tmp){
-                lst->in_head = lst->in_head->next;
-                free_liver(tmp->liver);
-                free(tmp);
-                printf("your liver was deleted/\n");
-            }else {
-                while (temp->next != tmp) {
-                    temp = temp->next;
-                }
-                temp->next = tmp->next;
-                free_liver(tmp->liver);
-                free(tmp);
-                printf("your liver was deleted/\n");
-            }
+
+            delete_node_list(lst, tmp);
+            printf("your liver was deleted/\n");
+
+
+
             continue;
         }
         else if (act == 'p') {
@@ -1148,7 +1246,7 @@ input_state interactive(list* lst, undo_stack* stack){
             if(searchable == NULL && stat == meme_problem){
                 return is_mem_problem;
             }
-            //print_liver(searchable, stdout);
+
             node* tmp = find_same_liver(lst, searchable);
             if(tmp == NULL){
                 printf("there no such liver!\n");
@@ -1157,9 +1255,6 @@ input_state interactive(list* lst, undo_stack* stack){
                 print_liver(tmp->liver, stdout);
             }
             free_liver(searchable);
-
-
-
 
             continue;
         }
@@ -1180,6 +1275,7 @@ input_state interactive(list* lst, undo_stack* stack){
             continue;
         }
     }
+    return is_well;
 }
 
 
@@ -1427,8 +1523,8 @@ Liver* copy_liver(Liver* searchable){
     strcpy(stack_liver->surname, searchable->surname);
     stack_liver->name = (char*) malloc(sizeof(char)*(strlen(searchable->name) + 1));
     if(stack_liver->name == NULL){
-        free(stack_liver);
         free(stack_liver->surname);
+        free(stack_liver);
         return NULL;
     }
     strcpy(stack_liver->name, searchable->name);
@@ -1436,19 +1532,19 @@ Liver* copy_liver(Liver* searchable){
     if(searchable->father_name != NULL){
         stack_liver->father_name = (char*) malloc(sizeof(char)*(strlen(searchable->father_name) + 1));
         if(stack_liver->father_name == NULL){
-            free(stack_liver);
             free(stack_liver->surname);
             free(stack_liver->name);
+            free(stack_liver);
             return NULL;
         }
         strcpy(stack_liver->father_name, searchable->father_name);
     }
     stack_liver->birth_day = (char*) malloc(sizeof(char)*(strlen(searchable->birth_day) + 1));
     if(stack_liver->birth_day == NULL){
-        free(stack_liver);
         free(stack_liver->surname);
         free(stack_liver->name);
         free(stack_liver->father_name);
+        free(stack_liver);
         return NULL;
     }
     strcpy(stack_liver->birth_day, searchable->birth_day);
@@ -1475,5 +1571,27 @@ void print_undo_stack(undo_stack* stack) {
         }
 
         printf("\n");
+    }
+}
+
+void delete_node_list(list* lst, node* tmp)
+{
+    if(lst->in_head == NULL){
+        return;
+    }
+    node* temp = lst->in_head;
+    if(temp == tmp){
+        lst->in_head = lst->in_head->next;
+        free_liver(tmp->liver);
+        free(tmp);
+        //printf("your liver was deleted/\n");
+    }else {
+        while (temp->next != tmp) {
+            temp = temp->next;
+        }
+        temp->next = tmp->next;
+        free_liver(tmp->liver);
+        free(tmp);
+        //printf("your liver was deleted/\n");
     }
 }
