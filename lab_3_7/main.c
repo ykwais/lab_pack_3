@@ -5,7 +5,6 @@
 #include <string.h>
 #include <errno.h>
 #include <math.h>
-#include <limits.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <ctype.h>
@@ -47,7 +46,8 @@ typedef enum status{
     meme_problem,
     invalid,
     empty_str,
-    last_str
+    last_str,
+    none
 }state;
 
 typedef enum type{
@@ -67,6 +67,8 @@ typedef struct undo_stack{
     int buf;
 }undo_stack;
 
+
+
 char* read_line(state* stat, FILE* file);
 int count_tokens(char *str, const char *delim);
 void print_liver(Liver* liver, FILE* file);
@@ -76,9 +78,14 @@ state add_node(list* lst, Liver* liver);
 node* create_node(Liver* liver);
 node* find_same_liver(list* lst, Liver* liver);
 void free_list(list* lst);
-void print_list(list* lst, char* filename);
+void print_list(list* lst, FILE* file);
 time_t data_compare(char* str1, char* str2);
-void interactive(list* lst, undo_stack* stack);
+input_state interactive(list* lst, undo_stack* stack);
+Liver* get_liver_stdin(state* stat);
+void free_liver(Liver* liver);
+void clear_input_buffer(FILE* file);
+state add_undo_stack(undo_stack* stack, node* prev, type tp);
+void delete_stack(undo_stack* stack);
 
 list main_list;
 
@@ -100,6 +107,9 @@ int main(int argc, char** argv){
     }
 
     undo_stack stack;
+    stack.size = 0;
+    stack.buf = 0;
+    stack.nodes = NULL;
     main_list.in_head = NULL;
     switch(parsing_input_data(argv[1], &main_list)){
         case is_exist_liver:
@@ -146,6 +156,7 @@ int main(int argc, char** argv){
     //print_list(&main_list, "stdout");
     interactive(&main_list, &stack);
     free_list(&main_list);
+    delete_stack(&stack);
 
 }
 
@@ -534,6 +545,14 @@ node* find_same_liver(list* lst, Liver* liver){
     return NULL;
 }
 
+void free_liver(Liver* liver){
+    free(liver->surname);
+    free(liver->name);
+    free(liver->father_name);
+    free(liver->birth_day);
+    free(liver);
+
+}
 
 void free_list(list* lst){
     node* tmp = NULL;
@@ -550,25 +569,12 @@ void free_list(list* lst){
 
 }
 
-void print_list(list* lst, char* filename){
-    if(strcmp(filename, "stdout") == 0){
-        node* tmp = lst->in_head;
-        while(tmp != NULL){
-            print_liver(tmp->liver, stdout);
-            tmp = tmp->next;
-        }
-    }else{
-        FILE* file = fopen(filename, "w");
-        if(file == NULL){
-            printf("problem with opening file: %s\n", filename);
-            return;
-        }
-        node* tmp = lst->in_head;
-        while(tmp != NULL){
-            print_liver(tmp->liver, file);
-            tmp = tmp->next;
-        }
+void print_list(list* lst, FILE* file){
 
+    node* tmp = lst->in_head;
+    while(tmp != NULL){
+        print_liver(tmp->liver, file);
+        tmp = tmp->next;
     }
 
 }
@@ -603,7 +609,7 @@ void clear_input_buffer(FILE* file) {
     while ((ch = fgetc(file)) != '\n' && ch != EOF);
 }
 
-void interactive(list* lst, undo_stack* stack){
+input_state interactive(list* lst, undo_stack* stack){
     while(1) {
         printf("==================================================================\n");
         printf("Choose action:\n");
@@ -628,9 +634,40 @@ void interactive(list* lst, undo_stack* stack){
             printf("you've inputted wrong action, rerun\n");
             continue;
         }
-        state st = well;
+
         if (act == 'a') {
-            printf("a\n");
+            printf("process of adding a new liver has been started\n");
+            state stat = well;
+            Liver* searchable = get_liver_stdin(&stat);
+            if(searchable == NULL && stat == meme_problem){
+                return is_mem_problem;
+            }
+            node* tmp = find_same_liver(lst, searchable);
+            if(tmp != NULL && lst->in_head != NULL){
+                free_liver(searchable);
+                printf("such liver already exist!\n");
+                continue;
+            }
+            stat = add_node(lst, searchable);
+            if(stat == meme_problem){
+                free_liver(searchable);
+                return is_mem_problem;
+            }
+            if(stat == invalid){
+                free_liver(searchable);
+                printf("you've entered the NULL-pointer!\n");
+                continue;
+            }
+            node* temp = find_same_liver(lst, searchable);
+            if(temp == NULL){
+                return is_mem_problem;
+            }
+            state stt = add_undo_stack(stack, temp, add);
+            if(stt != well){
+                return is_mem_problem;
+            }
+            printf("your liver was added\n");
+
             continue;
         }
         else if (act == 'c') {
@@ -638,15 +675,86 @@ void interactive(list* lst, undo_stack* stack){
             continue;
         }
         else if (act == 'd') {
-            printf("d\n");
+            printf("process of deleting a liver has been started\n");
+            state stat = well;
+            Liver* searchable = get_liver_stdin(&stat);
+            if(searchable == NULL && stat == meme_problem){
+                return is_mem_problem;
+            }
+            node* tmp = find_same_liver(lst, searchable);
+            if(tmp == NULL && lst->in_head != NULL){
+                free_liver(searchable);
+                printf("impossible to find such liver!\n");
+                continue;
+            }
+            state stt = add_undo_stack(stack, tmp, delete);
+            if(stt != well){
+                return is_mem_problem;
+            }
+
+            node* temp = lst->in_head;
+            if(temp == tmp){
+                lst->in_head = lst->in_head->next;
+                printf("your liver was deleted/\n");
+            }else {
+                while (temp->next != tmp) {
+                    temp = temp->next;
+                }
+                temp->next = tmp->next;
+
+                printf("your liver was deleted/\n");
+            }
             continue;
         }
         else if (act == 'p') {
-            printf("p\n");
+            printf("ok, print to file.\nInput the filename:");
+            state stat = none;
+            char* filename = NULL;
+            while(stat != well){
+                filename = read_line(&stat, stdin);
+                if(stat == meme_problem){
+                    return is_mem_problem;
+                }
+                if(stat == empty_str){
+                    free(filename);
+                    printf("filename isn't empty string!\n");
+                    continue;
+                }
+
+            }
+            FILE* file = fopen(filename, "w");
+            if(file == NULL){
+                printf("something wrong with opening the file: %s\n", filename);
+                free(filename);
+                stat = invalid;
+                continue;
+            }
+            print_list(lst, file);
+            fclose(file);
+            free(filename);
+            printf("data were wrote, well\n");
             continue;
         }
         else if (act == 'f') {
-            printf("f\n");
+            printf("procedure of searching liver has been started:\n");
+            state stat = well;
+            Liver* searchable = get_liver_stdin(&stat);
+            if(searchable == NULL && stat == meme_problem){
+                return is_mem_problem;
+            }
+            //print_liver(searchable, stdout);
+            node* tmp = find_same_liver(lst, searchable);
+            if(tmp == NULL){
+                printf("there no such liver!\n");
+            }else{
+                printf("such liver is exist!\n\n");
+                print_liver(tmp->liver, stdout);
+            }
+            free_liver(searchable);
+
+
+
+
             continue;
         }
         else if (act == 'u') {
@@ -654,7 +762,7 @@ void interactive(list* lst, undo_stack* stack){
             continue;
         }
         else if (act == 'i') {
-            print_list(lst, "stdout");
+            print_list(lst, stdout);
             continue;
         }
         else if (act == 'q') {
@@ -666,4 +774,226 @@ void interactive(list* lst, undo_stack* stack){
             continue;
         }
     }
+}
+
+
+Liver* get_liver_stdin(state* stat){
+    state st = none;
+    char* surname = NULL;
+    char* name = NULL;
+    char* father_name = NULL;
+    char* birth_day = NULL;
+    char male;
+    long double amount_income;
+    while(st != well){
+        printf("\ninput the surname of new liver:\n");
+        surname = read_line(&st, stdin);
+        if(st == meme_problem){
+            *stat = meme_problem;
+            return NULL;
+        }
+        if(st == empty_str){
+            free(surname);
+            printf("surname isn't empty string!\n");
+            continue;
+        }
+        if(!is_latin_str(surname)){
+            free(surname);
+            printf("surname must be a latin string!\n");
+            st = invalid;
+            continue;
+        }
+    }
+    printf("surname accept!\n");
+    st = none;
+    while(st != well){
+        printf("\ninput the name of new liver:\n");
+        name = read_line(&st, stdin);
+        if(st == meme_problem){
+            *stat = meme_problem;
+            free(surname);
+            return NULL;
+        }
+        if(st == empty_str){
+            free(name);
+            printf("name isn't empty string!\n");
+            continue;
+        }
+        if(!is_latin_str(name)){
+            free(name);
+            printf("name must be a latin string!\n");
+            st = invalid;
+            continue;
+        }
+    }
+    st = none;
+    printf("name accept!\n");
+    while(st != well && st != empty_str){
+        printf("\ninput the patronymic of new liver:\n");
+        father_name = read_line(&st, stdin);
+        if(st == meme_problem){
+            *stat = meme_problem;
+            free(name);
+            free(surname);
+            return NULL;
+        }
+        if(st == empty_str){
+            free(father_name);
+            father_name = NULL;
+            printf("your patronymic is empty, well!\n");
+            continue;
+        }
+        if(!is_latin_str(father_name)){
+            free(father_name);
+            printf("patronymic must be a latin string!\n");
+            st = invalid;
+            continue;
+        }
+    }
+    st = none;
+    printf("patronymic accept!\n");
+    while(st != well){
+        printf("\ninput the birth day of new liver in format dd.mm.yyyy :\n");
+        birth_day = read_line(&st, stdin);
+        if(st == meme_problem){
+            *stat = meme_problem;
+            free(name);
+            free(surname);
+            free(father_name);
+            return NULL;
+        }
+        if(st == empty_str){
+            free(birth_day);
+            printf("birth day cannot be an empty string!\n");
+            continue;
+        }
+        struct tm in;
+        if(strptime(birth_day, "%d.%m.%Y", &in) == NULL || in.tm_year > 123 || in.tm_year < 10){
+            free(birth_day);
+            printf("incorrect data!\n");
+            st = invalid;
+            continue;
+        }
+    }
+    st = none;
+    printf("birth day accept!\n");
+    while(st != well){
+        printf("\ninput the male of new liver (M or W) :\n");
+        char choice;
+        fflush(stdin);
+        if(scanf("%c", &choice) == EOF){
+            printf("invalid value!\n");
+            st = invalid;
+            continue;
+        }
+        int ch;
+        if ((ch = getchar()) != '\n' && ch != EOF) {
+            clear_input_buffer(stdin);
+            printf("you've inputted wrong male, rerun\n");
+            st = invalid;
+            continue;
+        }
+        if(choice != 'M' && choice != 'W'){
+            printf("incorrect male!\n");
+            st = invalid;
+            continue;
+        }
+        male = choice;
+        st = well;
+    }
+    st = none;
+    printf("male was accepted!\n");
+    while(st != well){
+        printf("\ninput the income of new liver:\n");
+        char* income = read_line(&st, stdin);
+        if(st == meme_problem){
+            *stat = meme_problem;
+            free(name);
+            free(surname);
+            free(father_name);
+            free(birth_day);
+            return NULL;
+        }
+        if(st == empty_str){
+            free(income);
+            printf("income cannot be an empty string!\n");
+            continue;
+        }
+        if(strlen(income) > 20){
+            printf("too large/little number!\n");
+            free(income);
+            st = invalid;
+            continue;
+        }
+        char *end;
+        long double average_income = strtold(income, &end);
+        if (*end != '\0' && *end != '\r' && *end != '\n' || end == income || (average_income == 0.0 && errno == ERANGE) || average_income >= HUGE_VAL-10 || average_income <= -HUGE_VAL + 10 || average_income < 0 || income[0] == '-') {
+            printf("you've inputted invalid or negative income!\n");
+            free(income);
+            st = invalid;
+            continue;
+        }
+        free(income);
+        amount_income = average_income;
+    }
+
+    Liver* current_liver = (Liver*)malloc(sizeof(Liver));
+    if(current_liver == NULL){
+        free(surname);
+        free(name);
+        free(father_name);
+        free(birth_day);
+        *stat = meme_problem;
+        return NULL;
+    }
+    current_liver->surname =  surname;
+    current_liver->name = name;
+    current_liver->father_name = father_name;
+    current_liver->birth_day = birth_day;
+    current_liver->male = male;
+    current_liver->average_income = amount_income;
+    return current_liver;
+
+}
+
+state add_undo_stack(undo_stack* stack, node* prev, type tp)
+{
+    if(stack == NULL || prev == NULL){
+        return invalid;
+    }
+
+    if(stack->nodes == NULL){
+        stack->buf = 2;
+        stack->size = 0;
+        stack->nodes = (stack_node*) malloc(sizeof(stack_node)*(stack->buf));
+        if(stack->nodes == NULL){
+            return meme_problem;
+        }
+    }
+
+    stack->size++;
+    if(stack->size >= stack->buf){
+        stack->buf *= 2;
+        stack_node* tmp = (stack_node*) realloc(stack->nodes, sizeof(stack_node)*(stack->buf));
+        if(tmp == NULL){
+            return meme_problem;
+        }else{
+            stack->nodes = tmp;
+        }
+    }
+    stack->nodes[stack->size - 1].pnode = prev;
+
+    stack->nodes[stack->size - 1].tp = tp;
+    return well;
+
+}
+
+void delete_stack(undo_stack* stack){
+    if(stack == NULL){
+        return;
+    }
+    for(int i = 0; i < stack->size; ++i){
+        free_liver(stack->nodes[i].pnode->liver);
+    }
+    free(stack->nodes);
 }
