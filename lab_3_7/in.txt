@@ -1,6 +1,6 @@
-fedorkov alex andr 12.05.2010 M 55.67
-fedorkov alex andr 12.01.2010 M 5584
-fedorov valex 14.03.1910 W 34.592
-sdfg sdfg asdfg 01.05.2022 M 0.1
-asf sdgf 09.09.2009 W 10.567
-asf sdgh 09.09.2009 W 10.567
+f f f 12.05.2010 M 5
+c  c  c 12.01.2010 M 5584
+f f  14.03.1910 W 4.5
+s s s 01.05.2022 M 0.1
+a s   09.09.2009 W 10.7
+g g  09.09.2009  W  1.5
