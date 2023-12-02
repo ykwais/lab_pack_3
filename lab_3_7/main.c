@@ -109,8 +109,8 @@ int main(int argc, char** argv){
 
     signal(SIGINT, signal_handler);
 
-    if(argc < 2){
-        printf("too little arguments!\n");
+    if(argc != 2){
+        printf("wrong number of arguments!\n");
         return 0;
     }
 
@@ -1306,7 +1306,7 @@ input_state interactive(list* lst, undo_stack* stack){
                     count_of_operation--;
                     printf("undo was done!\n");
                 }
-                if(stack->nodes[stack->size - 1].tp == delete){
+                else if(stack->nodes[stack->size - 1].tp == delete){
 
                     Liver* new_liver = copy_liver(stack->nodes[stack->size - 1].pnode->liver);
                     add_node(lst, new_liver);
@@ -1329,7 +1329,7 @@ input_state interactive(list* lst, undo_stack* stack){
                     printf("undo was done!\n");
                 }
 
-                if(stack->nodes[stack->size - 1].tp == modification){
+                else if(stack->nodes[stack->size - 1].tp == modification){
                     node* tmp = find_same_liver(lst, stack->nodes[stack->size - 1].current_in_list->liver);
                     if(tmp == NULL){
                         //error
@@ -1355,6 +1355,7 @@ input_state interactive(list* lst, undo_stack* stack){
                     count_of_operation--;
                     printf("undo was done!\n");
                 }
+                else{}
             }
 
             print_undo_stack(stack);
