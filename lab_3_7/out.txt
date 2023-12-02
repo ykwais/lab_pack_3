@@ -1,0 +1,42 @@
+surname: s
+name: s
+father_name: s
+birthday: 01.05.2022
+male: M
+average income: 0.100000
+
+surname: f
+name: f
+father_name: f
+birthday: 12.05.2010
+male: M
+average income: 5324322.000000
+
+surname: c
+name: c
+father_name: c
+birthday: 12.01.2010
+male: M
+average income: 5584.000000
+
+surname: g
+name: g
+father_name: no
+birthday: 09.09.2009
+male: W
+average income: 1.500000
+
+surname: a
+name: s
+father_name: no
+birthday: 09.09.2009
+male: W
+average income: 10.700000
+
+surname: f
+name: f
+father_name: no
+birthday: 14.03.1910
+male: W
+average income: 4.500000
+
