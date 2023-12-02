@@ -10,6 +10,8 @@
 #include <ctype.h>
 #define EPS 1e-6
 
+
+
 typedef struct Liver{
     char* surname;
     char* name;
@@ -68,7 +70,8 @@ typedef struct undo_stack{
     int buf;
 }undo_stack;
 
-
+list main_list;
+undo_stack stack;
 
 char* read_line(state* stat, FILE* file);
 int count_tokens(char *str, const char *delim);
@@ -91,11 +94,12 @@ Liver* copy_liver(Liver* searchable);
 void print_undo_stack(undo_stack* stack);
 void delete_node_list(list* lst, node* tmp);
 
-list main_list;
+
 
 void signal_handler(int x){//for ctrl+C
     if(x == SIGINT){
         free_list(&main_list);
+        delete_stack(&stack);
         exit(0);
     }
 
@@ -110,7 +114,7 @@ int main(int argc, char** argv){
         return 0;
     }
 
-    undo_stack stack;
+
     stack.size = 0;
     stack.buf = 0;
     stack.nodes = NULL;
@@ -632,6 +636,8 @@ void clear_input_buffer(FILE* file) {
 }
 
 input_state interactive(list* lst, undo_stack* stack){
+    int count_of_operation = 0;
+    int can_undo = 0;
     while(1) {
         printf("==================================================================\n");
         printf("Choose action:\n");
@@ -723,6 +729,7 @@ input_state interactive(list* lst, undo_stack* stack){
             }
             print_undo_stack(stack);
             printf("your liver was added\n");
+            count_of_operation++;
 
             continue;
         }
@@ -826,6 +833,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         return is_mem_problem;
                     }
                     printf("the surname was changed!\n");
+                    count_of_operation++;
                     print_undo_stack(stack);
                     break;
                 }
@@ -891,6 +899,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         return is_mem_problem;
                     }
                     printf("the name was changed!\n");
+                    count_of_operation++;
                     print_undo_stack(stack);
                     break;
 
@@ -956,6 +965,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         return is_mem_problem;
                     }
                     printf("the patronymic was changed!\n");
+                    count_of_operation++;
                     print_undo_stack(stack);
                     break;
 
@@ -989,9 +999,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         free(birth_day);
                         return is_mem_problem;
                     }
-                    //free_liver(searchable);
-                    //free(tmp->liver->birth_day);
-                    //tmp->liver->birth_day = birth_day;
+
                     node* tmp2 = create_node(stack_liver);
                     if(tmp2 == NULL){
                         free_liver(stack_liver);
@@ -1033,6 +1041,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         return is_mem_problem;
                     }
                     printf("the date of birth was changed!\n");
+                    count_of_operation++;
                     print_undo_stack(stack);
                     break;
 
@@ -1081,6 +1090,7 @@ input_state interactive(list* lst, undo_stack* stack){
                     }
                     printf("the male was changed to reverse\n");
                     print_undo_stack(stack);
+                    count_of_operation++;
                     break;
 
                 }
@@ -1151,6 +1161,7 @@ input_state interactive(list* lst, undo_stack* stack){
                         return is_mem_problem;
                     }
                     printf("the average income was changed!\n");
+                    count_of_operation++;
                     print_undo_stack(stack);
                     break;
 
@@ -1205,9 +1216,7 @@ input_state interactive(list* lst, undo_stack* stack){
 
             delete_node_list(lst, tmp);
             printf("your liver was deleted/\n");
-
-
-
+            count_of_operation++;
             continue;
         }
         else if (act == 'p') {
@@ -1260,6 +1269,96 @@ input_state interactive(list* lst, undo_stack* stack){
         }
         else if (act == 'u') {
             printf("u\n");
+            printf("amount elements in stack: %d\n", stack->size);
+            printf("count of modification:%d:\n", count_of_operation);
+            if(count_of_operation < 2){
+                printf("too little operation were done!\n");
+                continue;
+            }
+            if(can_undo > count_of_operation/2){}
+            else{
+                can_undo = count_of_operation/2;
+                can_undo = stack->size - can_undo;
+            }
+
+            if(stack->size != can_undo){
+                if(stack->nodes[stack->size - 1].tp == add){
+                    node* tmp = find_same_liver(lst, stack->nodes[stack->size - 1].current_in_list->liver);
+                    if(tmp == NULL){
+                        //error
+                    }
+                    delete_node_list(lst, tmp);
+
+                    free_liver(stack->nodes[stack->size - 1].pnode->liver);
+                    free(stack->nodes[stack->size - 1].pnode);
+                    if(stack->nodes[stack->size - 1].current_in_list != NULL) {
+                        free_liver(stack->nodes[stack->size - 1].current_in_list->liver);
+                        free(stack->nodes[stack->size - 1].current_in_list);
+                    }
+                    stack->size--;
+                    stack->buf = stack->size;
+                    stack_node* temp = (stack_node*)realloc(stack->nodes , sizeof(stack_node)*(stack->buf));
+                    if(temp == NULL){
+                        //error
+                    }else{
+                        stack->nodes = temp;
+                    }
+                    count_of_operation--;
+                    printf("undo was done!\n");
+                }
+                if(stack->nodes[stack->size - 1].tp == delete){
+
+                    Liver* new_liver = copy_liver(stack->nodes[stack->size - 1].pnode->liver);
+                    add_node(lst, new_liver);
+
+                    free_liver(stack->nodes[stack->size - 1].pnode->liver);
+                    free(stack->nodes[stack->size - 1].pnode);
+                    if(stack->nodes[stack->size - 1].current_in_list != NULL) {
+                        free_liver(stack->nodes[stack->size - 1].current_in_list->liver);
+                        free(stack->nodes[stack->size - 1].current_in_list);
+                    }
+                    stack->size--;
+                    stack->buf = stack->size;
+                    stack_node* temp = (stack_node*)realloc(stack->nodes , sizeof(stack_node)*(stack->buf));
+                    if(temp == NULL){
+                        //error
+                    }else{
+                        stack->nodes = temp;
+                    }
+                    count_of_operation--;
+                    printf("undo was done!\n");
+                }
+
+                if(stack->nodes[stack->size - 1].tp == modification){
+                    node* tmp = find_same_liver(lst, stack->nodes[stack->size - 1].current_in_list->liver);
+                    if(tmp == NULL){
+                        //error
+                    }
+                    delete_node_list(lst, tmp);
+                    Liver* new_liver = copy_liver(stack->nodes[stack->size - 1].pnode->liver);
+                    add_node(lst, new_liver);
+
+                    free_liver(stack->nodes[stack->size - 1].pnode->liver);
+                    free(stack->nodes[stack->size - 1].pnode);
+                    if(stack->nodes[stack->size - 1].current_in_list != NULL) {
+                        free_liver(stack->nodes[stack->size - 1].current_in_list->liver);
+                        free(stack->nodes[stack->size - 1].current_in_list);
+                    }
+                    stack->size--;
+                    stack->buf = stack->size;
+                    stack_node* temp = (stack_node*)realloc(stack->nodes , sizeof(stack_node)*(stack->buf));
+                    if(temp == NULL){
+                        //error
+                    }else{
+                        stack->nodes = temp;
+                    }
+                    count_of_operation--;
+                    printf("undo was done!\n");
+                }
+            }
+
+            print_undo_stack(stack);
+
             continue;
         }
         else if (act == 'i') {
