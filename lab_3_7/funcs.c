@@ -1110,7 +1110,7 @@ input_state interactive(list* lst, undo_stack* stack){
                 if(stack->nodes[stack->size - 1].tp == add){
                     node* tmp = find_same_liver(lst, stack->nodes[stack->size - 1].current_in_list->liver);
                     if(tmp == NULL){
-                        //error
+                        return is_mem_problem;
                     }
                     delete_node_list(lst, tmp);
 
@@ -1124,7 +1124,7 @@ input_state interactive(list* lst, undo_stack* stack){
                     stack->buf = stack->size;
                     stack_node* temp = (stack_node*)realloc(stack->nodes , sizeof(stack_node)*(stack->buf));
                     if(temp == NULL){
-                        //error
+                        return is_mem_problem;
                     }else{
                         stack->nodes = temp;
                     }
@@ -1134,7 +1134,14 @@ input_state interactive(list* lst, undo_stack* stack){
                 else if(stack->nodes[stack->size - 1].tp == delete){
 
                     Liver* new_liver = copy_liver(stack->nodes[stack->size - 1].pnode->liver);
-                    add_node(lst, new_liver);
+                    if(new_liver == NULL){
+                        return is_mem_problem;
+                    }
+                    state st = add_node(lst, new_liver);
+                    if(st != well){
+                        free_liver(new_liver);
+                        return is_mem_problem;
+                    }
 
                     free_liver(stack->nodes[stack->size - 1].pnode->liver);
                     free(stack->nodes[stack->size - 1].pnode);
@@ -1146,7 +1153,7 @@ input_state interactive(list* lst, undo_stack* stack){
                     stack->buf = stack->size;
                     stack_node* temp = (stack_node*)realloc(stack->nodes , sizeof(stack_node)*(stack->buf));
                     if(temp == NULL){
-                        //error
+                        return is_mem_problem;
                     }else{
                         stack->nodes = temp;
                     }
@@ -1157,11 +1164,18 @@ input_state interactive(list* lst, undo_stack* stack){
                 else if(stack->nodes[stack->size - 1].tp == modification){
                     node* tmp = find_same_liver(lst, stack->nodes[stack->size - 1].current_in_list->liver);
                     if(tmp == NULL){
-                        //error
+                        return is_mem_problem;
                     }
                     delete_node_list(lst, tmp);
                     Liver* new_liver = copy_liver(stack->nodes[stack->size - 1].pnode->liver);
-                    add_node(lst, new_liver);
+                    if(new_liver == NULL){
+                        return is_mem_problem;
+                    }
+                    state st = add_node(lst, new_liver);
+                    if(st != well){
+                        free_liver(new_liver);
+                        return is_mem_problem;
+                    }
 
                     free_liver(stack->nodes[stack->size - 1].pnode->liver);
                     free(stack->nodes[stack->size - 1].pnode);
@@ -1173,7 +1187,7 @@ input_state interactive(list* lst, undo_stack* stack){
                     stack->buf = stack->size;
                     stack_node* temp = (stack_node*)realloc(stack->nodes , sizeof(stack_node)*(stack->buf));
                     if(temp == NULL){
-                        //error
+                        return is_mem_problem;
                     }else{
                         stack->nodes = temp;
                     }
@@ -1183,7 +1197,7 @@ input_state interactive(list* lst, undo_stack* stack){
                 else{}
             }
 
-            print_undo_stack(stack);
+            //print_undo_stack(stack);
 
             continue;
         }

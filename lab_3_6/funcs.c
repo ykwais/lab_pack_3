@@ -579,7 +579,7 @@ void interactive(out_list* list)
             printf("the bus with the most number of routes: %s\n", tmp);
             continue;
         }
-        if (act == 'b') {
+        else if (act == 'b') {
             char* tmp = bus_id_route(list, &st, "min");
             if(st == invalid){
                 printf("something wrong!\n");
@@ -588,7 +588,7 @@ void interactive(out_list* list)
             printf("the bus with the least number of routes: %s\n", tmp);
             continue;
         }
-        if (act == 'c') {
+        else if (act == 'c') {
             double z;
             char* tmp = bus_id_length_track(list, &st, "max", &z);
             if(st == invalid){
@@ -598,7 +598,7 @@ void interactive(out_list* list)
             printf("the bus with the longest track length (%lf): %s\n",z, tmp);
             continue;
         }
-        if (act == 'd') {
+        else if (act == 'd') {
             double z;
             char* tmp = bus_id_length_track(list, &st, "min", &z);
             if(st == invalid){
@@ -608,7 +608,7 @@ void interactive(out_list* list)
             printf("the bus with the shortest track length (%lf): %s\n",z, tmp);
             continue;
         }
-        if (act == 'e') {
+        else if (act == 'e') {
             double z;
             char* tmp = max_route_length_bus_id(list, &st, "max", &z);
             if(st == invalid){
@@ -618,7 +618,7 @@ void interactive(out_list* list)
             printf("the bus with the longest route (%lf): %s\n",z, tmp);
             continue;
         }
-        if (act == 'f') {
+        else if (act == 'f') {
             double z;
             char* tmp = max_route_length_bus_id(list, &st, "min", &z);
             if(st == invalid){
@@ -628,7 +628,7 @@ void interactive(out_list* list)
             printf("the bus with the shortest route (%lf): %s\n",z, tmp);
             continue;
         }
-        if (act == 'g') {
+        else if (act == 'g') {
             double z;
             char* tmp = diff_arr_dep(list, &st, "max", &z);
             if(st == invalid){
@@ -638,7 +638,7 @@ void interactive(out_list* list)
             printf("the bus with the longest stop (%lf): %s\n",z, tmp);
             continue;
         }
-        if (act == 'h') {
+        else if (act == 'h') {
             double z;
             char* tmp = diff_arr_dep(list, &st, "min", &z);
             if(st == invalid){
@@ -648,7 +648,7 @@ void interactive(out_list* list)
             printf("the bus with the shortest stop (%lf): %s\n",z, tmp);
             continue;
         }
-        if (act == 'w') {
+        else if (act == 'w') {
             double z;
             char* tmp = stop_time(list, &st, &z);
             if(st == invalid){
@@ -658,14 +658,18 @@ void interactive(out_list* list)
             printf("the bus with the longest downtime (%lf): %s\n",z, tmp);
             continue;
         }
-        if (act == 'i') {
+        else if (act == 'i') {
             printf("full list of vehicles:\n");
             print_all(list);
             continue;
         }
-        if (act == 'q') {
+        else if (act == 'q') {
             printf("bye!\n");
             break;
+        }
+        else{
+            printf("you've inputted wrong action, rerun\n");
+            continue;
         }
     }
 }
