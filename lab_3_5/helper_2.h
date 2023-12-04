@@ -21,10 +21,8 @@ typedef struct{
 typedef enum status{
     well,
     meme_problem,
-    invalid,
     empty_str,
-    last_str,
-    none
+    last_str
 }state;
 
 typedef enum input_code{

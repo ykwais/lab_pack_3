@@ -68,7 +68,7 @@ input_status collect_data(char* filename, Student** list, int* stud_count, int* 
         }
         char* end;
         ui id = strtoul(uid, &end, 10);
-        if (end == uid || uid[0] == '-' || *end != '\0') {
+        if (end == uid || uid[0] == '-' || *end != '\0' || strlen(uid) > 10) {
             fclose(file);
             free(one_full_string);
             free(uid);
