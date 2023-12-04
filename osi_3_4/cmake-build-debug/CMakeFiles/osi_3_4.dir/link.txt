@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/osi_3_4.dir/main.c.o -o osi_3_4 

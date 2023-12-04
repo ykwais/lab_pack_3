@@ -8,7 +8,7 @@ input_status collect_data(char* filename, Student** list, size_lex* len_lex, int
     }
     int q = fgetc(file);
     if(q == EOF){
-
+        fclose(file);
         return ic_empty_file;
     }else{
         fseek(file, 0, SEEK_SET);

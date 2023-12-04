@@ -6,8 +6,8 @@
 //TODO проверить все free и fclose ✓
 //TODO все через strtoud или такого рода ✓
 //TODO обработка пустого файла ✓
-
 //TODO тестинг Тиме ✓
+//TODO убрать все дублирования кода
 
 
 int main(int argc, char** argv) {

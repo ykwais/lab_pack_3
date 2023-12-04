@@ -1,27 +1,10 @@
-4 petr an 1 2 3  4   5 211-C
-1 vasya ivanov 1 2 3 4 5   8f8
-33 tima irisov 5 5 5 5 5  56_76
-21 cooper michalov 5 5 5 5 3  1000-7
-3 zzz zaycev 5 5  5 5 4  12win
-2 nigga jalap 5 4 3 2 4 gg
-5 tex latex 4 4 4 4 5 dfjgh
-1123253 hi a 3 3 3 3 3 s12k
-8
-alloc
-mem
-5
-5
-
-
-
-
-
-
-
-
-
-5
-5
-5
-r789-sd
-112 dfd dfd 3 4 5 5 5 245_C
+4 petr an 211-C 1 2 3 4 5
+7 vasya ivanov 8f8 1 2 3 4 5
+33 tima irisov 56_76 5 5 5 5 5
+21 cooper michalov 1000-7 5 5 5 5 3
+3 zzz zaycev 12win 5 5 5 5 4
+2 nigga jalap gg 5 4 5 2 4
+5 tex latex dfjgh 4 4 4 4 3
+1123253 hi a s12k 3 3 3 3 3
+8 alloc mem r789-sd 5 5 5 5 5
+112 dfd dfd 245_C 3 4 5 5 5

@@ -79,6 +79,45 @@ build lab_3_5.exe: C_EXECUTABLE_LINKER__lab_3_5_Debug CMakeFiles/lab_3_5.dir/mai
   TARGET_IMPLIB = liblab_3_5.dll.a
   TARGET_PDB = lab_3_5.exe.dbg
 
+# =============================================================================
+# Object build statements for EXECUTABLE target re
+
+
+#############################################
+# Order-only phony target for re
+
+build cmake_object_order_depends_target_re: phony || CMakeFiles/re.dir
+
+build CMakeFiles/re.dir/re_main.c.obj: C_COMPILER__re_Debug C$:/Users/fedor/mai_labs_2/lab_pack_3/lab_3_5/re_main.c || cmake_object_order_depends_target_re
+  DEP_FILE = CMakeFiles\re.dir\re_main.c.obj.d
+  FLAGS = -g -std=gnu2x
+  OBJECT_DIR = CMakeFiles\re.dir
+  OBJECT_FILE_DIR = CMakeFiles\re.dir
+
+build CMakeFiles/re.dir/funcs_2.c.obj: C_COMPILER__re_Debug C$:/Users/fedor/mai_labs_2/lab_pack_3/lab_3_5/funcs_2.c || cmake_object_order_depends_target_re
+  DEP_FILE = CMakeFiles\re.dir\funcs_2.c.obj.d
+  FLAGS = -g -std=gnu2x
+  OBJECT_DIR = CMakeFiles\re.dir
+  OBJECT_FILE_DIR = CMakeFiles\re.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target re
+
+
+#############################################
+# Link the executable re.exe
+
+build re.exe: C_EXECUTABLE_LINKER__re_Debug CMakeFiles/re.dir/re_main.c.obj CMakeFiles/re.dir/funcs_2.c.obj
+  FLAGS = -g
+  LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  OBJECT_DIR = CMakeFiles\re.dir
+  POST_BUILD = cd .
+  PRE_LINK = cd .
+  TARGET_FILE = re.exe
+  TARGET_IMPLIB = libre.dll.a
+  TARGET_PDB = re.exe.dbg
+
 
 #############################################
 # Utility command for edit_cache
@@ -107,6 +146,8 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 
 build lab_3_5: phony lab_3_5.exe
 
+build re: phony re.exe
+
 # =============================================================================
 # Folder targets.
 
@@ -115,7 +156,7 @@ build lab_3_5: phony lab_3_5.exe
 #############################################
 # Folder: C:/Users/fedor/mai_labs_2/lab_pack_3/lab_3_5/cmake-build-debug
 
-build all: phony lab_3_5.exe
+build all: phony lab_3_5.exe re.exe
 
 # =============================================================================
 # Built-in targets

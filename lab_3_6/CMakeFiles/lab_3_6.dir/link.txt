@@ -1,1 +1,0 @@
-/usr/bin/cc -g CMakeFiles/lab_3_6.dir/main.c.o CMakeFiles/lab_3_6.dir/funcs.c.o -o lab_3_6  -lm 
