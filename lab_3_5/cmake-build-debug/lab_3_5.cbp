@@ -117,8 +117,14 @@
 		<Unit filename="/mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_5/funcs.c">
 			<Option target="lab_3_5"/>
 		</Unit>
+		<Unit filename="/mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_5/funcs_2.c">
+			<Option target="re"/>
+		</Unit>
 		<Unit filename="/mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_5/helper.h">
 			<Option target="lab_3_5"/>
+		</Unit>
+		<Unit filename="/mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_5/helper_2.h">
+			<Option target="re"/>
 		</Unit>
 		<Unit filename="/mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_3_5/main.c">
 			<Option target="lab_3_5"/>

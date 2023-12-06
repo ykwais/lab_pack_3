@@ -301,3 +301,44 @@ void print_student(Student *student, FILE* file)
     fprintf(file,"ID: %u, Name: %s, Surname: %s, Group: %s, \n", student->id, student->name, student->surname, student->group);
 }
 
+
+int compare_by_id(const void *a, const void *b) {
+    return ((Student*)a)->id - ((Student *)b)->id;
+}
+
+int compare_by_surname(const void *a, const void *b) {
+    return strcmp(((Student *)a)->surname, ((Student *)b)->surname);
+}
+
+int compare_by_name(const void *a, const void *b) {
+    return strcmp(((Student *)a)->name, ((Student *)b)->name);
+}
+
+int compare_by_group(const void *a, const void *b) {
+    return strcmp(((Student *)a)->group, ((Student *)b)->group);
+}
+
+
+void print_average_grades(Student *students, int count, FILE *file) {
+    int total_summ = 0;
+    int total_count = 0;
+    for (int i = 0; i < count; i++) {
+        for (int j = 0; j < 5; j++) {
+            total_summ += students[i].marks[j] - '0';
+        }
+        total_count += 5;
+    }
+    double total_average = (double)total_summ / total_count;
+    fprintf(file, "\nthe total average: %f\n", total_average);
+
+    for (int i = 0; i < count; i++) {
+        double student_average = 0;
+        for (int j = 0; j < 5; j++) {
+            student_average += students[i].marks[j] - '0';
+        }
+        student_average /= 5;
+        if (student_average > total_average) {
+            fprintf(file, "name: %s, surname: %s, average score: %f\n", students[i].name, students[i].surname, student_average);
+        }
+    }
+}

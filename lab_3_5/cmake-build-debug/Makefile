@@ -166,6 +166,30 @@ funcs.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lab_3_5.dir/build.make CMakeFiles/lab_3_5.dir/funcs.c.s
 .PHONY : funcs.c.s
 
+funcs_2.o: funcs_2.c.o
+.PHONY : funcs_2.o
+
+# target to build an object file
+funcs_2.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/re.dir/build.make CMakeFiles/re.dir/funcs_2.c.o
+.PHONY : funcs_2.c.o
+
+funcs_2.i: funcs_2.c.i
+.PHONY : funcs_2.i
+
+# target to preprocess a source file
+funcs_2.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/re.dir/build.make CMakeFiles/re.dir/funcs_2.c.i
+.PHONY : funcs_2.c.i
+
+funcs_2.s: funcs_2.c.s
+.PHONY : funcs_2.s
+
+# target to generate assembly for a file
+funcs_2.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/re.dir/build.make CMakeFiles/re.dir/funcs_2.c.s
+.PHONY : funcs_2.c.s
+
 main.o: main.c.o
 .PHONY : main.o
 
@@ -227,6 +251,9 @@ help:
 	@echo "... funcs.o"
 	@echo "... funcs.i"
 	@echo "... funcs.s"
+	@echo "... funcs_2.o"
+	@echo "... funcs_2.i"
+	@echo "... funcs_2.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

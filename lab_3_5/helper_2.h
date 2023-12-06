@@ -45,5 +45,10 @@ char* create_string(char* str);
 bool is_latin_str(char* str);
 void free_students(Student** lst, const int *count);
 void print_student(Student *student, FILE* file);
+int compare_by_id(const void *a, const void *b);
+int compare_by_surname(const void *a, const void *b);
+int compare_by_name(const void *a, const void *b);
+int compare_by_group(const void *a, const void *b);
+void print_average_grades(Student *students, int count, FILE *file);
 
 #endif //LAB_3_5_HELPER_2_H

@@ -1,9 +1,9 @@
 ID: 33, Name: tima, Surname: irisov, Group: 56_76, 
-the average score: 53.000000
+
 
 the total average: 4.060000
-name: tima, surname: irisov, average score: 5.000000
 name: cooper, surname: michalov, average score: 4.600000
 name: zzz, surname: zaycev, average score: 4.800000
-name: alloc, surname: mem, average score: 5.000000
 name: dfd, surname: dfd, average score: 4.400000
+name: tima, surname: irisov, average score: 5.000000
+name: alloc, surname: mem, average score: 5.000000

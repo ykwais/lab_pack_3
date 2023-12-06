@@ -1,11 +1,5 @@
 #include "helper_2.h"
 
-int compare_by_id(const void *a, const void *b);
-int compare_by_surname(const void *a, const void *b);
-int compare_by_name(const void *a, const void *b);
-int compare_by_group(const void *a, const void *b);
-void print_average_grades(Student *students, int count, FILE *file);
-
 int main(int argc, char** argv)
 {
 
@@ -71,7 +65,6 @@ int main(int argc, char** argv)
     FILE* out_file = NULL;
     if(!(out_file = fopen(argv[2], "w"))){
         printf("problem with opening file %s\n", argv[2]);
-
         free_students(&list_of_students, &count_students);
         return 0;
     }
@@ -85,22 +78,42 @@ int main(int argc, char** argv)
             compare_by_group
     };
 
-    char* menu[] = {"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%", "1 - search by id", "2 - search by surname", "3 - search by name", "4 - search by group", "5 - sort by id", "6 - sort by surname", "7 - sort by name", "8 - sort by group", "9 - students with high average", "10 - exit"};
+    char* menu[] = {
+            "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",
+            "1 - search by id",
+            "2 - search by surname",
+            "3 - search by name",
+            "4 - search by group",
+            "5 - sort by id",
+            "6 - sort by surname",
+            "7 - sort by name",
+            "8 - sort by group",
+            "9 - students with high average",
+            "10 - exit"
+    };
+
+
+    for(int i = 0; i < count_students; ++i)
+    {
+        print_student(&list_of_students[i], stdout);
+    }
+
     while(1)
     {
         for(int i = 0; i < 11; ++i)
         {
             printf("%s\n", menu[i]);
         }
+        printf("input the choice + string if you choose 1-4 and tap enter if you choose 5-9:\n");
         ui choice;
-        char str[10];
+        char str[4];
         fflush(stdin);
-        scanf("%9s", str);
+        scanf("%3s", str);
 
         char* endptr;
         choice = strtoul(str, &endptr, 10);
-        if (endptr == str) {
-            printf("not number\n");
+        if (endptr == str || *endptr != '\0') {
+            printf("not valid number\n");
             continue;
         }
         if(choice == 10){
@@ -108,12 +121,14 @@ int main(int argc, char** argv)
             break;
         }
 
+
         state stat = well;
         fflush(stdin);
         char *strok = read_line(&stat, stdin);
         if (stat == meme_problem) {
             printf("meme problem!\n");
             free_students(&list_of_students, &count_students);
+            fclose(out_file);
             return 0;
         }
         if (stat == empty_str && choice < 5) {
@@ -128,13 +143,10 @@ int main(int argc, char** argv)
             case 1: {
                 printf("Entered the id of student:\n");
                 ui id;
-//                char st[11];
-//                fflush(stdin);
-//                scanf("%10s", st);
                 char *enddptr;
                 id = strtoul(strok, &enddptr, 10);
-                if (enddptr == strok || strok[0] == '-' || *enddptr != '\0') {
-                    printf("not unsigned int!\n");
+                if (enddptr == strok || strok[0] == '-' || *enddptr != '\0' || strlen(strok) > 10) {
+                    printf("not valid unsigned int!\n");
                     break;
                 }
 
@@ -233,16 +245,20 @@ int main(int argc, char** argv)
                 {
                     print_student(&list_of_students[i], stdout);
                 }
+                free(strok);
                 break;
 
             case 9:
                 printf("the values are recorded\n");
                 print_average_grades(list_of_students, count_students, out_file);
+                free(strok);
                 break;
             default:
                 printf("You've inputted the wrong choice\n");
+                free(strok);
                 break;
         }
+
     }
 
 //    for(int i = 0; i < count_students; ++i)
@@ -254,43 +270,3 @@ int main(int argc, char** argv)
 }
 
 
-int compare_by_id(const void *a, const void *b) {
-    return ((Student*)a)->id - ((Student *)b)->id;
-}
-
-int compare_by_surname(const void *a, const void *b) {
-    return strcmp(((Student *)a)->surname, ((Student *)b)->surname);
-}
-
-int compare_by_name(const void *a, const void *b) {
-    return strcmp(((Student *)a)->name, ((Student *)b)->name);
-}
-
-int compare_by_group(const void *a, const void *b) {
-    return strcmp(((Student *)a)->group, ((Student *)b)->group);
-}
-
-
-void print_average_grades(Student *students, int count, FILE *file) {
-    int total_summ = 0;
-    int total_count = 0;
-    for (int i = 0; i < count; i++) {
-        for (int j = 0; j < 5; j++) {
-            total_summ += students[i].marks[j] - '0';
-        }
-        total_count += 5;
-    }
-    double total_average = (double)total_summ / total_count;
-    fprintf(file, "\nthe total average: %f\n", total_average);
-
-    for (int i = 0; i < count; i++) {
-        double student_average = 0;
-        for (int j = 0; j < 5; j++) {
-            student_average += students[i].marks[j] - '0';
-        }
-        student_average /= 5;
-        if (student_average > total_average) {
-            fprintf(file, "name: %s, surname: %s, average score: %f\n", students[i].name, students[i].surname, student_average);
-        }
-    }
-}
