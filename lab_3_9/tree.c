@@ -18,14 +18,6 @@ Node* create_node(char* str)
     {
         return NULL;
     }
-//    int len = (int)strlen(str);
-//    new_node->word = (char*) malloc(sizeof(char)*(len + 1));
-//    if(new_node->word == NULL)
-//    {
-//        free(new_node);
-//        return NULL;
-//    }
-//    strcpy(new_node->word, str);
     new_node->word = str;
     new_node->counter = 1;
     new_node->right = NULL;
@@ -59,7 +51,8 @@ Node* add_node(Node* root, Node* new_node, new_old* st)
     {
         return new_node;
     }
-    int comp = strcmp(root->word, new_node->word);
+
+    int comp = comp_word(root->word, new_node->word);
     if(comp == 0)
     {
         root->counter++;
@@ -83,7 +76,8 @@ Node* find_node(Node* root, const char* str)
     {
         return NULL;
     }
-    int comp = strcmp(root->word, str);
+    //int comp = strcmp(root->word, str);
+    int comp = comp_word(root->word, str);
     if(comp == 0){
         return root;
     }
@@ -100,7 +94,12 @@ Node* find_node(Node* root, const char* str)
 
 void print_node(Node* node)
 {
-    printf("%s<%d>\n", node->word, node->counter);
+    if(node != NULL){
+        printf("%s<%d>\n", node->word, node->counter);
+    }else{
+        printf("NULL\n");
+    }
+
 }
 
 void print_tree(Node* root, int depth)
@@ -115,4 +114,50 @@ void print_tree(Node* root, int depth)
         print_node(root);
         print_tree(root->left, depth + 1);
     }
+}
+
+int comp_word(const char* a, const char* b)
+{
+
+    if(strlen(a) == strlen(b))
+    {return strcmp(a, b); }
+
+    return (int)strlen(a) - (int)strlen(b);
+}
+
+int max(int a, int b)
+{
+    return a > b ? a : b;
+}
+
+int depth_tree(Node* root)
+{
+    if(root == NULL)
+    {
+        return 0;
+    }
+    return 1 + max(depth_tree(root->left), depth_tree(root->right));
+}
+
+void save_tree_node(Node* root, FILE* file)
+{
+    if(root == NULL || file == NULL)
+    {
+        return;
+    }
+    for(int i = 0; i < root->counter; ++i){
+        fprintf(file, "%s|", root->word);
+    }
+
+    save_tree_node(root->left, file);
+    save_tree_node(root->right, file);
+}
+
+void save_tree(Tree* tree, FILE* file)
+{
+    if(tree == NULL || file == NULL)
+    {
+        return;
+    }
+    save_tree_node(tree->root, file);
 }

@@ -15,7 +15,8 @@
 					"source" : ".",
 					"targetIndexes" : 
 					[
-						0
+						0,
+						1
 					]
 				}
 			],
@@ -30,7 +31,8 @@
 					"name" : "lab_3_9",
 					"targetIndexes" : 
 					[
-						0
+						0,
+						1
 					]
 				}
 			],
@@ -41,6 +43,13 @@
 					"id" : "lab_3_9::@6890427a1f51a3e7e1df",
 					"jsonFile" : "target-lab_3_9-Debug-4de5b851541890ce642b.json",
 					"name" : "lab_3_9",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test-Debug-c3b7fbd91077955a8a02.json",
+					"name" : "test",
 					"projectIndex" : 0
 				}
 			]
