@@ -13,7 +13,8 @@ typedef enum
     invalid_input,
     eof,
     mem_problem,
-    error_with_file
+    error_with_file,
+    is_empty_file
 } state;
 
 typedef struct Variable
@@ -41,7 +42,7 @@ state free_polinomial(Polynomial *p);
 state build_Polynomial(char *input, int n, Polynomial **a, char variable);
 state multy_polinom(const Polynomial* first, const Polynomial* second, Polynomial** result);
 state sub_polinom(const Polynomial* first, const Polynomial* second, Polynomial** result);
-state do_command(char* line, Polynomial** p, char variable, long long** tmp, int** current);
+state do_command(char* line, Polynomial** p, char variable, long long* value, bool* is_tem);
 state calculate_polinom(const Polynomial* pol, long long* res, int num);
 state diff_polinom(Polynomial* p);
 state division_polinom(const Polynomial* first, const Polynomial* second, Polynomial** major, Polynomial** minor);
@@ -51,6 +52,7 @@ state cmp_polinom(const Polynomial* first, const Polynomial* second, Polynomial*
 void print_polynom(Polynomial *p, char variable);
 state task(const char * file_name, char variable);
 void print_status_codes(state code);
+
 
 state create_polynom(Polynomial** p)
 {
@@ -124,9 +126,16 @@ state task(const char * file_name, char variable)
     if(file == NULL){
         return error_with_file;
     }
+    int q = fgetc(file);
+    if (q == EOF) {
+        fclose(file);
+        return is_empty_file;
+    } else {
+        fseek(file, 0, SEEK_SET);
+    }
     state st = well;
     Polynomial* p;
-    Polynomial* new;
+    //Polynomial* new;
 
     st = init_polynom(&p, 0);
     if(st != well){
@@ -135,25 +144,27 @@ state task(const char * file_name, char variable)
     char* command = NULL;
 
     while((st = filter_read_line(file, &command)) == well) {
-        long long *temp = NULL;
-        int *crnt_variable = NULL;
+        long long temp;
+        bool is_temp = false;
 
-        st = do_command(command, &p, variable, &temp, &crnt_variable);
+
+        st = do_command(command, &p, variable, &temp, &is_temp);
         if(st != well){
             free(command);
+
             free_polinomial(p);
             fclose(file);
             return st;
         }
         free(command);
         command = NULL;
-        if(temp == NULL)
+        if(is_temp == false)
         {
             print_polynom(p, variable);
         }
         else{
-            printf("Polynomial eval with %c = %d is : %lld\n", variable, *crnt_variable, *temp);
-            free(temp);
+            printf("Polynomial eval with %c is : %lld\n", variable, temp);
+            is_temp = false;
         }
 
     }
@@ -198,7 +209,7 @@ state filter_read_line(FILE* file, char** line)
     }
     line_of_file[size] = '\0';
     *line = line_of_file;
-    if(ch == EOF) return eof;
+    if((ch = fgetc(file)) ==  EOF) return eof;
     return well;
 }
 
@@ -233,7 +244,7 @@ void swap_polin(Polynomial** f, Polynomial** s)
     s = tmp;
 }
 
-state do_command(char* line, Polynomial** p, char variable, long long** value, int** current)
+state do_command(char* line, Polynomial** p, char variable, long long* value, bool* is_tem)
 {
     int len = (int)strlen(line);
     int count1 = count_symb(line, '(');
@@ -334,26 +345,27 @@ state do_command(char* line, Polynomial** p, char variable, long long** value, i
             return st;
         }
         printf("calculated polynom: %lld\n", val);
-        *value = (long long*)malloc(sizeof(int));
-        if(*value == NULL){
-            free_polinomial(pol);
-            free_arr(input, n);
-            return mem_problem;
-        }
-        *current = (int*)malloc(sizeof(int));
-        if(*current == NULL){
-            free(*value);
-            free_polinomial(pol);
-            free_arr(input, n);
-            return mem_problem;
-        }
-        **value = val;
-        **current = num;
+//        *value = (long long*)malloc(sizeof(long long));
+//        if(*value == NULL){
+//            free_polinomial(pol);
+//            free_arr(input, n);
+//            return mem_problem;
+//        }
+//        *current = (int*)malloc(sizeof(int));
+//        if(*current == NULL){
+//            free(*value);
+//            free_polinomial(pol);
+//            free_arr(input, n);
+//            return mem_problem;
+//        }
+        *is_tem = true;
+        *value = val;
+        //**current = num;
         *p = pol;
         free_arr(input, n);
         return well;
     }
-    else if(strncmp(line, "Diff", 4) == 0)
+    else if(strncmp(line, "Diff", 4) == 0 )
     {
         Polynomial* pol;
         if(n == 1)
@@ -375,6 +387,8 @@ state do_command(char* line, Polynomial** p, char variable, long long** value, i
             return st;
         }
         *p = pol;
+        free_arr(input, n);
+        return well;
     }
 
     Polynomial* p1 = NULL;
@@ -446,9 +460,11 @@ state do_command(char* line, Polynomial** p, char variable, long long** value, i
     else if(strncmp(line, "Div", 3) == 0 && n > 0)
     {
         st = div_polynom(p1, p2, p);
+        //st = divv_pol(p1,p2,p);
         free_polinomial(p1);
         free_polinomial(p2);
         if(st != well){
+            *p = NULL;
             free_arr(input, n);
             return st;
         }
@@ -464,6 +480,7 @@ state do_command(char* line, Polynomial** p, char variable, long long** value, i
             free_arr(input, n);
             return st;
         }
+        *p = pol3;
         free_arr(input,n);
         return well;
     }
@@ -895,9 +912,14 @@ state diff_polinom(Polynomial* p)
     return well;
 }
 
+
 state division_polinom(const Polynomial* first, const Polynomial* second, Polynomial** major, Polynomial** minor) {
     Polynomial *_major;
     Polynomial *_minor;
+    if(second->degree == 1 && second->first->value == 0)
+    {
+        return invalid_input;
+    }
     state st = create_polynom(&_major);
     if (st != well) return st;
     st = create_polynom(&_minor);
@@ -919,10 +941,10 @@ state division_polinom(const Polynomial* first, const Polynomial* second, Polyno
         return st;
     }
 
-    if (first->degree < second->degree) return invalid_input;///////
+    if (first->degree < second->degree) return well;///////
 
     Variable *ptr = first->first;
-    Variable *ptr2 = second->first;
+    Variable *ptr2 = _minor->first;
 
     for (int i = 0; i < first->degree; i++) {
         ptr2->value = ptr->value;
@@ -1065,6 +1087,7 @@ state cmp_polinom(const Polynomial* first, const Polynomial* second, Polynomial*
 
     while(ptr_f != NULL)
     {
+        int k = degree;
         Polynomial* tmp = NULL;
         st = init_polynom(&tmp, 1);
         if (st != well) {
@@ -1072,7 +1095,7 @@ state cmp_polinom(const Polynomial* first, const Polynomial* second, Polynomial*
             return st;
         }
 
-        while ((degree--) > 0)
+        while ((k--) > 0)
         {
             st = multy_polinom(tmp, second, &tmp);
             if (st != well) {
@@ -1089,6 +1112,7 @@ state cmp_polinom(const Polynomial* first, const Polynomial* second, Polynomial*
             return st;
         }
         ptr_f = ptr_f->next;
+        degree--;
         free_polinomial(tmp);
     }
 
@@ -1110,7 +1134,7 @@ void print_elements(Variable *e, char variable, int degree)
 void print_polynom(Polynomial *p, char variable)
 {
     if (p == NULL) { return; }
-    printf("Degree of current polynomial is %d : ", p->degree - 1);
+    printf("After operation polinom is: ");
     print_elements(p->first, variable, p->degree - 1);
     printf("\n");
 }
@@ -1121,10 +1145,10 @@ void print_status_codes(state code)
     switch (code)
     {
         case well:
-            printf("Success\n");
+            printf("well\n");
             break;
         case bad:
-            printf("Not success\n");
+            printf("Not well\n");
             break;
         case invalid_input:
             printf("Invalid input\n");
@@ -1138,8 +1162,12 @@ void print_status_codes(state code)
         case error_with_file:
             printf("Error with file\n");
             break;
+        case is_empty_file:
+            printf("File is empty\n");
+            break;
         default:
             printf("Unknown status code\n");
             break;
     }
 }
+
