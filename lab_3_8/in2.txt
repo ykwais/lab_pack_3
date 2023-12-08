@@ -1,0 +1,8 @@
+Add(2x^2+3x+1,x^2+x+2);%sdjnj
+Add(9,0);
+Sub(2,3);Mult(4x,5x^2);
+Add(x,x);
+Add(9,0);
+Eval(x^2,2);
+Cmps(x^2,x^2+3x+9);
+Mod(x^2+x,x^2);
