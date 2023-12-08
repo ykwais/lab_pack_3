@@ -1,57 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include <ctype.h>
+#include "helper.h"
 
-#define BUFF 200
 
-typedef enum
-{
-    well,
-    bad,
-    invalid_input,
-    eof,
-    mem_problem,
-    error_with_file,
-    is_empty_file
-} state;
-
-typedef struct Variable
-{
-    struct Variable *next;
-    int value;
-} Variable;
-
-typedef struct{
-    Variable *first;
-    Variable *last;
-    int degree;
-}Polynomial;
-
-state filter_read_line(FILE* file, char** line);
-char** split_line(const char* line, const char* separate, int* amount);
-state valid_polinom(char* str, char variable);
-void free_arr(char** arr, int size);
-state pre_build_polinom(char *line, int *pos, Polynomial **result, char variable);
-state increase_polynom(Polynomial *p, int size);
-Variable* search_by_degree(const Polynomial *p, int index);
-state summ_polinom(const Polynomial* first, const Polynomial* second, Polynomial** result);
-void free_elem(Variable *current);
-state free_polinomial(Polynomial *p);
-state build_Polynomial(char *input, int n, Polynomial **a, char variable);
-state multy_polinom(const Polynomial* first, const Polynomial* second, Polynomial** result);
-state sub_polinom(const Polynomial* first, const Polynomial* second, Polynomial** result);
-state do_command(char* line, Polynomial** p, char variable, long long* value, bool* is_tem);
-state calculate_polinom(const Polynomial* pol, long long* res, int num);
-state diff_polinom(Polynomial* p);
-state division_polinom(const Polynomial* first, const Polynomial* second, Polynomial** major, Polynomial** minor);
-state div_polynom(const Polynomial *a, const Polynomial *b, Polynomial **major);
-state mod_polynom(const Polynomial *a, const Polynomial *b, Polynomial **minor);
-state cmp_polinom(const Polynomial* first, const Polynomial* second, Polynomial** res);
-void print_polynom(Polynomial *p, char variable);
-state task(const char * file_name, char variable);
-void print_status_codes(state code);
 
 
 state create_polynom(Polynomial** p)
@@ -107,19 +56,7 @@ state init_polynom(Polynomial** p, int value)
 
 }
 
-int main(int argc, char const *argv[])
-{
-    if(argc != 3){
-        printf("Error: wrong number of arguments\n");
-    }
-    if(strlen(argv[2]) != 1)
-    {
-        printf("Error: wrong variable\n");
-    }
 
-    state st = task(argv[1], argv[2][0]);
-    print_status_codes(st);
-}
 state task(const char * file_name, char variable)
 {
     FILE* file = fopen(file_name, "r");
@@ -345,22 +282,10 @@ state do_command(char* line, Polynomial** p, char variable, long long* value, bo
             return st;
         }
         printf("calculated polynom: %lld\n", val);
-//        *value = (long long*)malloc(sizeof(long long));
-//        if(*value == NULL){
-//            free_polinomial(pol);
-//            free_arr(input, n);
-//            return mem_problem;
-//        }
-//        *current = (int*)malloc(sizeof(int));
-//        if(*current == NULL){
-//            free(*value);
-//            free_polinomial(pol);
-//            free_arr(input, n);
-//            return mem_problem;
-//        }
+
         *is_tem = true;
         *value = val;
-        //**current = num;
+
         *p = pol;
         free_arr(input, n);
         return well;
@@ -460,7 +385,7 @@ state do_command(char* line, Polynomial** p, char variable, long long* value, bo
     else if(strncmp(line, "Div", 3) == 0 && n > 0)
     {
         st = div_polynom(p1, p2, p);
-        //st = divv_pol(p1,p2,p);
+
         free_polinomial(p1);
         free_polinomial(p2);
         if(st != well){
@@ -1049,7 +974,7 @@ state division_polinom(const Polynomial* first, const Polynomial* second, Polyno
 state div_polynom(const Polynomial *a, const Polynomial *b, Polynomial **major)
 {
     Polynomial *temp = NULL;
-    state status = division_polinom(a, b, major, &temp);
+    state status = division_polinom(a, b, major, &temp);////
     if (status != well) { return status ;}
     free_polinomial(temp);
     return well;
@@ -1058,7 +983,7 @@ state div_polynom(const Polynomial *a, const Polynomial *b, Polynomial **major)
 state mod_polynom(const Polynomial *a, const Polynomial *b, Polynomial **minor)
 {
     Polynomial *temp = NULL;
-    state status = division_polinom(a, b, &temp, minor);
+    state status = division_polinom(a, b, &temp, minor);/////
     if (status != well) { return status ;}
     free_polinomial(temp);
     return well;
@@ -1170,4 +1095,6 @@ void print_status_codes(state code)
             break;
     }
 }
+
+
 

@@ -3,5 +3,5 @@ project(lab_3_8 C)
 
 set(CMAKE_C_STANDARD 23)
 
-add_executable(lab_3_8 main.c tmp.h)
-add_executable(test funcs.c)
+add_executable(lab_3_8 main.c helper.h funcs.c)
+
