@@ -57,6 +57,22 @@ build CMakeFiles/lab_4_1.dir/main.c.obj: C_COMPILER__lab_4_1_Debug C$:/Users/fed
   TARGET_COMPILE_PDB = CMakeFiles\lab_4_1.dir\
   TARGET_PDB = lab_4_1.pdb
 
+build CMakeFiles/lab_4_1.dir/funcs.c.obj: C_COMPILER__lab_4_1_Debug C$:/Users/fedor/mai_labs_2/lab_pack_3/lab_4_1/funcs.c || cmake_object_order_depends_target_lab_4_1
+  DEP_FILE = CMakeFiles\lab_4_1.dir\funcs.c.obj.d
+  FLAGS = -g -std=gnu2x
+  OBJECT_DIR = CMakeFiles\lab_4_1.dir
+  OBJECT_FILE_DIR = CMakeFiles\lab_4_1.dir
+  TARGET_COMPILE_PDB = CMakeFiles\lab_4_1.dir\
+  TARGET_PDB = lab_4_1.pdb
+
+build CMakeFiles/lab_4_1.dir/hash.c.obj: C_COMPILER__lab_4_1_Debug C$:/Users/fedor/mai_labs_2/lab_pack_3/lab_4_1/hash.c || cmake_object_order_depends_target_lab_4_1
+  DEP_FILE = CMakeFiles\lab_4_1.dir\hash.c.obj.d
+  FLAGS = -g -std=gnu2x
+  OBJECT_DIR = CMakeFiles\lab_4_1.dir
+  OBJECT_FILE_DIR = CMakeFiles\lab_4_1.dir
+  TARGET_COMPILE_PDB = CMakeFiles\lab_4_1.dir\
+  TARGET_PDB = lab_4_1.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target lab_4_1
@@ -65,7 +81,7 @@ build CMakeFiles/lab_4_1.dir/main.c.obj: C_COMPILER__lab_4_1_Debug C$:/Users/fed
 #############################################
 # Link the executable lab_4_1.exe
 
-build lab_4_1.exe: C_EXECUTABLE_LINKER__lab_4_1_Debug CMakeFiles/lab_4_1.dir/main.c.obj
+build lab_4_1.exe: C_EXECUTABLE_LINKER__lab_4_1_Debug CMakeFiles/lab_4_1.dir/main.c.obj CMakeFiles/lab_4_1.dir/funcs.c.obj CMakeFiles/lab_4_1.dir/hash.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\lab_4_1.dir
