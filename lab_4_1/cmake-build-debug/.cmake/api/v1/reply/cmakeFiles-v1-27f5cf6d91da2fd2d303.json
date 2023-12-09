@@ -15,7 +15,8 @@
 			"path" : "C:/Program Files/JetBrains/CLion 2022.2/bin/cmake/win/share/cmake-3.23/Modules/CMakeSystem.cmake.in"
 		},
 		{
-			"path" : "CMakeFiles/3.23.2/CMakeSystem.cmake"
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.23.2/CMakeSystem.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -263,7 +264,8 @@
 			"path" : "C:/Program Files/JetBrains/CLion 2022.2/bin/cmake/win/share/cmake-3.23/Modules/CMakeCCompiler.cmake.in"
 		},
 		{
-			"path" : "CMakeFiles/3.23.2/CMakeCCompiler.cmake"
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.23.2/CMakeCCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -336,7 +338,8 @@
 			"path" : "C:/Program Files/JetBrains/CLion 2022.2/bin/cmake/win/share/cmake-3.23/Modules/CMakeRCCompiler.cmake.in"
 		},
 		{
-			"path" : "CMakeFiles/3.23.2/CMakeRCCompiler.cmake"
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.23.2/CMakeRCCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -414,7 +417,8 @@
 			"path" : "C:/Program Files/JetBrains/CLion 2022.2/bin/cmake/win/share/cmake-3.23/Modules/CMakeCCompiler.cmake.in"
 		},
 		{
-			"path" : "CMakeFiles/3.23.2/CMakeCCompiler.cmake"
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.23.2/CMakeCCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -425,8 +429,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "C:/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6",
-		"source" : "C:/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6"
+		"build" : "C:/Users/fedor/mai_labs_2/lab_pack_3/lab_4_1/cmake-build-debug",
+		"source" : "C:/Users/fedor/mai_labs_2/lab_pack_3/lab_4_1"
 	},
 	"version" : 
 	{

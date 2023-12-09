@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6"
+			"value" : "c:/Users/fedor/mai_labs_2/lab_pack_3/lab_4_1/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -479,7 +479,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "C:/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6"
+			"value" : "C:/Users/fedor/mai_labs_2/lab_pack_3/lab_4_1"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -491,7 +491,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "C:/Program Files (x86)/lab_3_6"
+			"value" : "C:/Program Files (x86)/lab_4_1"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -707,7 +707,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "lab_3_6"
+			"value" : "lab_4_1"
 		},
 		{
 			"name" : "CMAKE_RANLIB",
@@ -1086,7 +1086,7 @@
 			"value" : "FALSE"
 		},
 		{
-			"name" : "lab_3_6_BINARY_DIR",
+			"name" : "lab_4_1_BINARY_DIR",
 			"properties" : 
 			[
 				{
@@ -1095,10 +1095,10 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6"
+			"value" : "C:/Users/fedor/mai_labs_2/lab_pack_3/lab_4_1/cmake-build-debug"
 		},
 		{
-			"name" : "lab_3_6_IS_TOP_LEVEL",
+			"name" : "lab_4_1_IS_TOP_LEVEL",
 			"properties" : 
 			[
 				{
@@ -1110,7 +1110,7 @@
 			"value" : "ON"
 		},
 		{
-			"name" : "lab_3_6_SOURCE_DIR",
+			"name" : "lab_4_1_SOURCE_DIR",
 			"properties" : 
 			[
 				{
@@ -1119,7 +1119,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/fedor/mai_labs_2/lab_pack_3/lab_3_6"
+			"value" : "C:/Users/fedor/mai_labs_2/lab_pack_3/lab_4_1"
 		}
 	],
 	"kind" : "cache",
