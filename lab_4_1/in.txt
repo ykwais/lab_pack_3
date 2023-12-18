@@ -1,9 +1,16 @@
-sjdfgfsdigsd
-sdihgisoosid
-#define A i
-#define i 22222222
 
-djghdjf
-a a
-A
-aaa aaa c i
+#define A i
+#define G t
+#define t 123123312123
+#define i 26564123856234178561385238746518723465871514235
+#define M 4545
+int main()
+{
+    int a = G;
+    int a = A + A + A + A + C + D;
+    double tr = G * 2;
+    t;
+    int a[M];
+
+
+}

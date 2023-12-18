@@ -37,6 +37,7 @@ state get_hash(char* key, HashTable* ht, unsigned long long* result)
 
 
 
+
 state insert_in_ht(HashTable* ht, char* key, char* value)
 {
     int len1 = (int)strlen(value);

@@ -45,5 +45,7 @@ state resize_ht(HashTable** ht, unsigned int new_size);
 state balance_insert(HashTable** ht, char* key, char* value);
 state file_work(char* input_name, char* out_name, HashTable** ht);
 state change_string(char **string, const char *old, const char *new);
+//state change_string(char** str, const char* old, const char* new);
+
 
 #endif //LAB_4_1_HELPER_H
