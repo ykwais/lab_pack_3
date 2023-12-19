@@ -35,11 +35,8 @@ int main(int argc, char** argv) {
         fclose(file);
         return 0;
     }
-
-
     free_memory(&storage_var);
     fclose(file);
-
 }
 
 

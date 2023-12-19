@@ -56,7 +56,7 @@ void print_status_codes(state status)
             printf("Invalid argument.\n");
             break;
         case uninit_var:
-            printf("Using uninitialized variable or incorrect action.\n");
+            printf("Using uninitialized variable or incorrect operand.\n");
             break;
         case conv_error:
             printf("Error converting string to number or there is undefined variable.\n");
@@ -411,7 +411,6 @@ state parsing_file(FILE* file, memory* storage)
 state get_instruction(FILE* file, char** name, char** operation, char** first_arg, char** second_arg)
 {
     int name_size = 0, name_buf = 2, first_arg_size = 0, first_arg_buf = 2, second_arg_size = 0, second_arg_buf = 2;
-    state st;
     int ch;
 
     while((ch = fgetc(file)) != EOF && (isspace(ch) || ch == ';'));
@@ -430,12 +429,14 @@ state get_instruction(FILE* file, char** name, char** operation, char** first_ar
     }
     (*name)[name_size] = '\0';
 
+    int counter_empty = 0;
     while(isspace(ch) && ch != EOF)
     {
+        counter_empty++;
         ch = fgetc(file);
     }
 
-    if(ch == '=')
+    if(ch == '=' && strcmp(*name, "print") != 0)
     {
         (*operation)[0] = '=';
         (*operation)[1] = '\0';
@@ -447,8 +448,9 @@ state get_instruction(FILE* file, char** name, char** operation, char** first_ar
     }
     else
     {
-        if(strcmp(*name, "print") == 0)
+        if(strcmp(*name, "print") == 0 )
         {
+            if( ch == '=') return invalid_input;
             if(ch == ';')
             {
                 (*operation)[0] = '\0';
@@ -458,6 +460,7 @@ state get_instruction(FILE* file, char** name, char** operation, char** first_ar
             }
             while(1)
             {
+                if(counter_empty == 0) return invalid_input;
                 if(ch == ';' || ch == EOF || isspace(ch)) break;
                 if(first_arg_size >= first_arg_buf - 1)
                 {
