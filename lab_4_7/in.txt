@@ -1,8 +1,16 @@
-myvar=15;
+
+myvar     =     415     ;
+myvar = -1*myvar;
+print myvar;
 bg=25;
-print;
 ccc=bg+11;
 print ccc;
-myvar=ccc;
 bg=ccc*myvar;
 print;
+print -96;
+
+a = 5;
+a = a * 3;
+b = a / 2;
+print b;
+
