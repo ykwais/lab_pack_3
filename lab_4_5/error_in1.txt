@@ -1,0 +1,15 @@
+Error detected in file: in1.txt
+Type: Invalid symbol
+Number of expression: 1
+Expression: 6^a
+
+Error detected in file: in1.txt
+Type: Wrong brackets
+Number of expression: 4
+Expression: ((1+2)
+
+Error detected in file: in1.txt
+Type: Invalid symbol
+Number of expression: 5
+Expression: (89 $ 45)
+

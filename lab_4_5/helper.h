@@ -31,7 +31,7 @@ typedef struct Stack{
     Stack_node* bottom;
 }Stack;
 
-void print_state(state st, char* message);
+void print_state(state st, char* filename, FILE* file, const int* count, char* infix, char* postfix);
 int priority_of_symbol(char symbol);
 char* read_line(FILE* file, state* stat);
 state push(Stack* stack, char symbol);

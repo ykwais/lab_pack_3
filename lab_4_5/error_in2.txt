@@ -1,0 +1,15 @@
+Error detected in file: in2.txt
+Type: Invalid symbol
+Number of expression: 1
+Expression: )4+5(
+
+Error detected in file: in2.txt
+Type: Invalid symbol
+Number of expression: 3
+Expression: (1+2+3)++
+
+Error detected in file: in2.txt
+Type: Invalid symbol
+Number of expression: 5
+Expression: 7d*56
+
