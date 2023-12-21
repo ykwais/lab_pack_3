@@ -1,6 +1,6 @@
 #include "helper.h"
 
-void print_state(state st, char* filename, FILE* file, const int* count, char* infix, char* postfix)
+void print_state(state st, char* filename, FILE* file, const int* count, char* infix, char* postfix, const long long int* result)
 {
     switch(st)
     {
@@ -12,7 +12,7 @@ void print_state(state st, char* filename, FILE* file, const int* count, char* i
             fprintf(file, "File: %s\n", filename);
             fprintf(file, "infix: %s\n", infix);
             fprintf(file, "postfix: %s\n", postfix);
-            fprintf(file, "value: \n\n");
+            fprintf(file, "value: %lld\n\n", *result);
             break;
         case empty_file:
             fprintf(file,"Empty file or memory allocation problem: %s\n", filename);
@@ -41,6 +41,25 @@ void print_state(state st, char* filename, FILE* file, const int* count, char* i
         case wrong_operation:
             fprintf(file,"Wrong operation in postfix\n");
             break;
+        case overflow:
+            fprintf(file, "Error detected in file: %s\n", filename);
+            fprintf(file, "Type: Overflow\n");
+            fprintf(file, "Number of expression: %d\n", *count);
+            fprintf(file, "Expression: %s\n\n", infix);
+            break;
+        case division_by_zero:
+            fprintf(file, "Error detected in file: %s\n", filename);
+            fprintf(file, "Type: Division by zero\n");
+            fprintf(file, "Number of expression: %d\n", *count);
+            fprintf(file, "Expression: %s\n\n", infix);
+            break;
+        case invalid_value:
+            fprintf(file, "Error detected in file: %s\n", filename);
+            fprintf(file, "Type: Invalid value\n");
+            fprintf(file, "Number of expression: %d\n", *count);
+            fprintf(file, "Expression: %s\n\n", infix);
+            break;
+
         default:
             fprintf(file, "Unknown state\n");
             break;
@@ -299,6 +318,8 @@ state infix_to_postfix(char* str, char** postfix)
     return well;
 }
 
+
+
 state push(Stack* stack, char symbol)
 {
     if(stack->bottom == NULL)
@@ -328,6 +349,8 @@ state push(Stack* stack, char symbol)
     return well;
 }
 
+
+
 state pop(Stack* stack)
 {
     if(stack->bottom == NULL)
@@ -352,6 +375,8 @@ state pop(Stack* stack)
     tmp->next = NULL;
     return well;
 }
+
+
 
 void free_stack(Stack* stack)
 {

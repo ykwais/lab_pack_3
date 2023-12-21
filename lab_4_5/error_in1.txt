@@ -1,7 +1,17 @@
 Error detected in file: in1.txt
 Type: Invalid symbol
 Number of expression: 1
+Expression: 1+2*(3%4)       (67 + 78)
+
+Error detected in file: in1.txt
+Type: Invalid symbol
+Number of expression: 1
 Expression: 6^a
+
+Error detected in file: in1.txt
+Type: Invalid symbol
+Number of expression: 4
+Expression: -(56+78)
 
 Error detected in file: in1.txt
 Type: Wrong brackets
