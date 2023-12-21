@@ -1,0 +1,2 @@
+Load A, in.txt;
+Print a, all;
