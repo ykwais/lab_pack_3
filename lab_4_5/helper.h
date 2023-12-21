@@ -60,5 +60,8 @@ int getNumberLength(long long int number);
 state stringToLongLong(const char* str, long long int* res);
 long long int bpow(long long int a, long long int b);
 state calculate_postfix(char* postfix, long long int* result);
+state push_val(Val_stack* stack, long long int val);
+state pop_val(Val_stack* stack);
+void free_val_stack(Val_stack* stack);
 
 #endif //LAB_4_5_HELPER_H

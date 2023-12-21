@@ -1,5 +1,5 @@
 Error detected in file: in3.txt
-Type: Invalid symbol
-Number of expression: 0
-Expression: 4 * 2 / 3 + ^ 2
+Type: Division by zero
+Number of expression: 1
+Expression: 6 / 0
 
