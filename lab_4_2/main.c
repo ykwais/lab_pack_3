@@ -24,7 +24,8 @@ typedef enum
     exist_array,
     int_overflow,
     invalid_format,
-    invalid_count_argc
+    invalid_count_argc,
+    empty_file
 } state;
 
 
@@ -77,6 +78,9 @@ void print_status(state status)
             break;
         case invalid_count_argc:
             printf("invalid count argc.\n");
+            break;
+        case empty_file:
+            printf("the file is empty.\n");
             break;
         default:
             printf("unknown status.\n");
@@ -160,7 +164,7 @@ state parse_file(char* filename)
     int ch;
     while((ch = getc(file)) != EOF)
     {
-        if(ch == '\n' || ch == '\r' || ch == '\t') continue;
+        //if(ch == '\n' || ch == '\r' || ch == '\t') continue;
         if(line == NULL || size >= buf - 1)
         {
             buf *= 2;
@@ -180,7 +184,7 @@ state parse_file(char* filename)
             line[size] = '\0';
             size = 0;
 
-            char* comand = strtok(line, " \n\t");
+            char* comand = strtok(line, " \n\t\r(");
             if(comand == NULL)
             {
                 fclose(file);
@@ -191,7 +195,7 @@ state parse_file(char* filename)
 
             if(strcmp(comand, "Load") == 0)
             {
-                char* array_name = strtok(NULL, " ,\n\t");
+                char* array_name = strtok(NULL, " ,\n\t\r");
                 if(array_name == NULL || strlen(array_name) != 1 || !isalpha(*array_name))
                 {
                     fclose(file);
@@ -200,7 +204,7 @@ state parse_file(char* filename)
                     return invalid_format;
                 }
 
-                char* filename_new = strtok(NULL, " ;\n\t");
+                char* filename_new = strtok(NULL, " ;\n\t\r");
                 if(filename == NULL || strcmp(filename, filename_new) == 0)
                 {
                     fclose(file);
@@ -209,7 +213,7 @@ state parse_file(char* filename)
                     return same_file;
                 }
 
-                if(strtok(NULL, " ,;\n\t") != NULL)
+                if(strtok(NULL, " ;\n\t\r") != NULL)
                 {
                     fclose(file);
                     free(line);
@@ -241,20 +245,12 @@ state parse_file(char* filename)
                     return st;
                 }
 
-                size = 0;
-                free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
+
 
             }
             else if(strcmp(comand, "Save") == 0)
             {
-                char* arr_name = strtok(NULL, " \n\t,");
+                char* arr_name = strtok(NULL, " \n\t\r,");
                 if(arr_name == NULL || strlen(arr_name) != 1 || !isalpha(*arr_name))
                 {
                     fclose(file);
@@ -263,7 +259,7 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                char* filename_new = strtok(NULL, " ;\n\t");
+                char* filename_new = strtok(NULL, " ;\n\t\r");
                 if(filename == NULL || strcmp(filename, filename_new) == 0)
                 {
                     fclose(file);
@@ -272,7 +268,7 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                if(strtok(NULL, " ,;\n\t") != NULL)
+                if(strtok(NULL, " ;\n\t\r") != NULL)
                 {
                     fclose(file);
                     free(line);
@@ -299,20 +295,10 @@ state parse_file(char* filename)
                     return st;
                 }
 
-                size = 0;
-                free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
-
             }
             else if(strcmp(comand, "Rand") == 0)
             {
-                char* arr_name = strtok(NULL, " \n\t,");
+                char* arr_name = strtok(NULL, " \n\t\r,");
                 if(arr_name == NULL || strlen(arr_name) != 1 || !isalpha(*arr_name))
                 {
                     fclose(file);
@@ -324,7 +310,7 @@ state parse_file(char* filename)
                 int count;
                 int lb;
                 int rb;
-                char* count_string = strtok(NULL, " ,\n\t");
+                char* count_string = strtok(NULL, " ,\n\t\r");
                 if(count_string == NULL)
                 {
                     fclose(file);
@@ -338,10 +324,14 @@ state parse_file(char* filename)
                     fclose(file);
                     free(line);
                     free_all_arrays(gen_array, 26);
-                    return invalid_comand;
+                    if(st == well)
+                    {
+                        return invalid_comand;
+                    }
+                    return st;
                 }
 
-                char* lb_string =   strtok(NULL, " ,\n\t");
+                char* lb_string = strtok(NULL, " ,\n\t\r");
                 if(lb_string == NULL)
                 {
                     fclose(file);
@@ -355,10 +345,10 @@ state parse_file(char* filename)
                     fclose(file);
                     free(line);
                     free_all_arrays(gen_array, 26);
-                    return invalid_comand;
+                    return st;
                 }
 
-                char* rb_string = strtok(NULL, " ;\n\t");
+                char* rb_string = strtok(NULL, " ;\n\t\r");
                 if(rb_string == NULL)
                 {
                     fclose(file);
@@ -372,10 +362,10 @@ state parse_file(char* filename)
                     fclose(file);
                     free(line);
                     free_all_arrays(gen_array, 26);
-                    return invalid_comand;
+                    return st;
                 }
 
-                if(strtok(NULL, " ,;\n\t") != NULL)
+                if(strtok(NULL, " ;\n\t\r") != NULL)
                 {
                     fclose(file);
                     free(line);
@@ -386,10 +376,29 @@ state parse_file(char* filename)
                 int index = toupper(*arr_name) - 'A';
                 if(gen_array[index] == NULL)
                 {
-                    fclose(file);
-                    free(line);
-                    free_all_arrays(gen_array, 26);
-                    return not_existed_array;
+
+
+                    st = create_new_array(&(gen_array[index]), *arr_name, 1);
+                    if(st != well)
+                    {
+                        fclose(file);
+                        free(line);
+                        free_all_arrays(gen_array, 26);
+                        return st;
+                    }
+
+                }
+                else
+                {
+                    free_array(&(gen_array[index]));
+                    st = create_new_array(&(gen_array[index]), *arr_name, 1);
+                    if(st != well)
+                    {
+                        fclose(file);
+                        free(line);
+                        free_all_arrays(gen_array, 26);
+                        return st;
+                    }
                 }
 
                 st = fill_randomly(gen_array[index], lb, rb, count);
@@ -401,20 +410,11 @@ state parse_file(char* filename)
                     return st;
                 }
 
-                size = 0;
-                free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
 
             }
             else if(strcmp(comand, "Concat") == 0)
             {
-                char* arr_name_first = strtok(NULL, " ,\n\t");
+                char* arr_name_first = strtok(NULL, " ,\n\t\r");
                 if(arr_name_first == NULL || strlen(arr_name_first) != 1 || !isalpha(*arr_name_first))
                 {
                     fclose(file);
@@ -423,7 +423,7 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                char* arr_name_second = strtok(NULL, " ;\n\t");
+                char* arr_name_second = strtok(NULL, " ;\n\t\r");
                 if(arr_name_second == NULL || strlen(arr_name_second) != 1 || !isalpha(*arr_name_second))
                 {
                     fclose(file);
@@ -432,7 +432,7 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                if(strtok(NULL, " ,;\n\t()") != NULL)
+                if(strtok(NULL, " ;\n\t\r") != NULL)
                 {
                     fclose(file);
                     free(line);
@@ -466,20 +466,11 @@ state parse_file(char* filename)
                     return st;
                 }
 
-                size = 0;
-                free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
 
             }
             else if(strcmp(comand, "Free") == 0)
             {
-                char* arr_name = strtok(NULL, " \n\t()");
+                char* arr_name = strtok(NULL, ")");//возможно нужно вернуть (
                 if(arr_name == NULL || strlen(arr_name) != 1 || !isalpha(*arr_name))
                 {
                     fclose(file);
@@ -488,7 +479,7 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                if(strtok(NULL, " ,;\n\t") != NULL)
+                if(strtok(NULL, " ;\n\t\r") != NULL)
                 {
                     fclose(file);
                     free(line);
@@ -505,19 +496,10 @@ state parse_file(char* filename)
                     return not_existed_array;
                 }
                 free_array(&gen_array[index]);
-                size = 0;
-                free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
             }
             else if(strcmp(comand, "Remove") == 0)
             {
-                char* arr_name = strtok(NULL, " ,\n\t");
+                char* arr_name = strtok(NULL, " ,\n\t\r");
                 if(arr_name == NULL || strlen(arr_name) != 1 || !isalpha(*arr_name))
                 {
                     fclose(file);
@@ -526,8 +508,8 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                char* start = strtok(NULL, " ,\n\t");
-                char* count = strtok(NULL, " ,;\n\t");
+                char* start = strtok(NULL, " ,\n\t\r");
+                char* count = strtok(NULL, " ,;\n\t\r");
                 if(start == NULL || count == NULL)
                 {
                     fclose(file);
@@ -536,7 +518,7 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                if(strtok(NULL, " ,;\n\t") != NULL)
+                if(strtok(NULL, " ;\n\t\r") != NULL)
                 {
                     fclose(file);
                     free(line);
@@ -578,20 +560,11 @@ state parse_file(char* filename)
                     free_all_arrays(gen_array, 26);
                     return st;
                 }
-                size = 0;
-                free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
 
             }
-            else if(strcmp(comand, "copy") == 0)
+            else if(strcmp(comand, "Copy") == 0)
             {
-                char* first_arr_name = strtok(NULL, " ,\n\t");
+                char* first_arr_name = strtok(NULL, " ,\n\t\r");
                 if(first_arr_name == NULL || strlen(first_arr_name) != 1 || !isalpha(*first_arr_name))
                 {
                     fclose(file);
@@ -599,8 +572,8 @@ state parse_file(char* filename)
                     free_all_arrays(gen_array, 26);
                     return invalid_comand;
                 }
-                char* start = strtok(NULL, " ,\n\t");
-                char* end = strtok(NULL, " ,\n\t");
+                char* start = strtok(NULL, " ,\n\t\r");
+                char* end = strtok(NULL, " ,\n\t\r");
                 if(start == NULL || end == NULL)
                 {
                     fclose(file);
@@ -609,7 +582,7 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                char* second_arr_name = strtok(NULL, " ,;\n\t");
+                char* second_arr_name = strtok(NULL, " ;\n\t\r");
                 if(second_arr_name == NULL || strlen(second_arr_name) != 1 || !isalpha(*second_arr_name))
                 {
                     fclose(file);
@@ -618,7 +591,7 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                if(strtok(NULL, " ,;\n\t()") != NULL)
+                if(strtok(NULL, " ;\n\t\r") != NULL)
                 {
                     fclose(file);
                     free(line);
@@ -669,36 +642,21 @@ state parse_file(char* filename)
                     free_all_arrays(gen_array, 26);
                     return st;
                 }
-                size = 0;
-                free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
+
 
             }
             else if(strcmp(comand, "Sort") == 0)
             {
-                char* arr_name = strtok(NULL, " +-,\n\t");
-                if(arr_name == NULL || strlen(arr_name) != 1 || !isalpha(*arr_name))
+                char* arr_name = strtok(NULL, " ;\n\t\r");//TODO убрать из разделителей + и - но считывать  только 2 символа strlen(arr_name) != 2
+                if(arr_name == NULL || strlen(arr_name) != 2 || !isalpha(arr_name[0]) || (arr_name[1] != '+' && arr_name[1] != '-'))
                 {
                     fclose(file);
                     free(line);
                     free_all_arrays(gen_array, 26);
                     return invalid_comand;
                 }
-                char* sort_type = strtok(NULL, " ,;\n\t");
-                if(sort_type == NULL || strlen(sort_type) != 1 || !(*sort_type == '+' || *sort_type == '-'))
-                {
-                    fclose(file);
-                    free(line);
-                    free_all_arrays(gen_array, 26);
-                    return invalid_comand;
-                }
-                if(strtok(NULL, " ,;\n\t") != NULL)
+
+                if(strtok(NULL, " ;\n\t\r") != NULL)
                 {
                     fclose(file);
                     free(line);
@@ -714,7 +672,7 @@ state parse_file(char* filename)
                     return not_existed_array;
                 }
 
-                st = sort_array(gen_array[index], *sort_type);
+                st = sort_array(gen_array[index], arr_name[1]);
                 if(st != well)
                 {
                     fclose(file);
@@ -722,20 +680,12 @@ state parse_file(char* filename)
                     free_all_arrays(gen_array, 26);
                     return st;
                 }
-                size = 0;
-                free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
+
 
             }
             else if(strcmp(comand, "Shuffle") == 0)
             {
-                char* arr_name = strtok(NULL, " ,\n\t;");
+                char* arr_name = strtok(NULL, " \n\t\r;");
                 if(arr_name == NULL || strlen(arr_name) != 1 || !isalpha(*arr_name))
                 {
                     fclose(file);
@@ -744,7 +694,7 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                if(strtok(NULL, " ,;\n\t") != NULL)
+                if(strtok(NULL, " ;\n\t\r") != NULL)
                 {
                     fclose(file);
                     free(line);
@@ -767,20 +717,12 @@ state parse_file(char* filename)
                     free_all_arrays(gen_array, 26);
                     return st;
                 }
-                size = 0;
-                free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
+
 
             }
             else if(strcmp(comand, "Stats") == 0)
             {
-                char* arr_name = strtok(NULL, " ,;\n\t");
+                char* arr_name = strtok(NULL, " ;\n\t\r");
                 if(arr_name == NULL || strlen(arr_name) != 1 || !isalpha(*arr_name))
                 {
                     fclose(file);
@@ -788,7 +730,7 @@ state parse_file(char* filename)
                     free_all_arrays(gen_array, 26);
                     return invalid_comand;
                 }
-                if(strtok(NULL, " ,;\n\t") != NULL)
+                if(strtok(NULL, " ;\n\t\r") != NULL)
                 {
                     fclose(file);
                     free(line);
@@ -806,20 +748,12 @@ state parse_file(char* filename)
                 }
 
                 print_stats_array(gen_array[index]);
-                size = 0;
-                free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
+
 
             }
             else if(strcmp(comand, "Print") == 0)
             {
-                char* arr_name = strtok(NULL, " ,\n\t");
+                char* arr_name = strtok(NULL, " ,\n\t\r");
                 if(arr_name == NULL || strlen(arr_name) != 1 || !isalpha(*arr_name))
                 {
                     fclose(file);
@@ -837,7 +771,7 @@ state parse_file(char* filename)
                     return not_existed_array;
                 }
 
-                char* next = strtok(NULL, " ,;\n\t");
+                char* next = strtok(NULL, " ,;\n\t\r");
                 if(next == NULL)
                 {
                     fclose(file);
@@ -846,24 +780,28 @@ state parse_file(char* filename)
                     return invalid_comand;
                 }
 
-                char* next_next = strtok(NULL, " ,;\n\t");
+                char* next_next = strtok(NULL, " ;\n\t\r");
 
                 if(strcmp(next, "all") == 0 && next_next == NULL)
                 {
                     st = print_all(gen_array[index]);
-                    if(st != well)
+                    if(st != well && st != empty_array)
                     {
                         fclose(file);
                         free(line);
                         free_all_arrays(gen_array, 26);
                         return st;
                     }
+                    if(st == empty_array)
+                    {
+                        print_status(empty_array);
+                    }
                 }
                 else if(next_next != NULL)
                 {
                     int start, end;
                     st = string_to_int(next, &start);
-                    if(st != well)
+                    if(st != well )
                     {
                         fclose(file);
                         free(line);
@@ -879,7 +817,7 @@ state parse_file(char* filename)
                         return st;
                     }
                     st = print_range(gen_array[index], start, end);
-                    if(st != well) {
+                    if(st != well ) {
                         fclose(file);
                         free(line);
                         free_all_arrays(gen_array, 26);
@@ -906,15 +844,14 @@ state parse_file(char* filename)
                         return st;
                     }
                 }
-                size = 0;
+
+            }
+            else
+            {
+                fclose(file);
                 free(line);
-                line = (char*)malloc(sizeof(char) * (buf+1));
-                if(line == NULL)
-                {
-                    fclose(file);
-                    free_all_arrays(gen_array, 26);
-                    return mem_problem;
-                }
+                free_all_arrays(gen_array, 26);
+                return invalid_comand;
             }
         }
     }
@@ -932,7 +869,10 @@ state free_array(Massive** array)
     {
         return empty_array;
     }
-    free((*array)->data);
+    if((*array)->data != NULL)
+    {
+        free((*array)->data);
+    }
     (*array)->data = NULL;
     (*array)->size = 0;
     (*array)->buf = 0;
@@ -989,7 +929,7 @@ state get_arr_from_file(char* filename, Massive* arr)
 
     while(getline(&line, &len, file) != -1)
     {
-        char* token = strtok(line, " \n\t");
+        char* token = strtok(line, " \n\t\r");
         while(token != NULL)
         {
             int value;
@@ -1016,12 +956,16 @@ state get_arr_from_file(char* filename, Massive* arr)
 
             }
             arr->data[arr->size++] = value;
-            token = strtok(NULL, " \n\t");
+            token = strtok(NULL, " \n\t\r");
 
         }
     }
     fclose(file);
     free(line);
+    if(arr->size == 0)
+    {
+        return empty_file;
+    }
     return well;
 
 }
@@ -1073,7 +1017,8 @@ state fill_randomly(Massive* arr, int lb, int rb, int count)
     }
     if(count > arr->buf)
     {
-        int* tmp = (int*)realloc(arr->data, sizeof(int) * count);
+        arr->buf = count;
+        int* tmp = (int*)realloc(arr->data, sizeof(int) * arr->buf);
         if(tmp == NULL)
         {
             return mem_problem;
@@ -1120,7 +1065,19 @@ state remove_some_elem_from_array(Massive* arr, int start, int count)
         return invalid_range;
     }
     int new_size = arr->size - count;
-    int* tmp = (int*)realloc(arr->data, sizeof(int) * new_size);
+    if(new_size < 0)
+    {
+        return invalid_range;
+    }
+    if(new_size == 0)
+    {
+        free(arr->data);
+        arr->data = NULL;
+        arr->size = 0;
+        arr->buf = 0;
+        return well;
+    }
+    int* tmp = (int*)malloc(sizeof(int) * new_size);
     if(tmp == NULL)
     {
         return mem_problem;
@@ -1139,6 +1096,7 @@ state remove_some_elem_from_array(Massive* arr, int start, int count)
             tmp[i - count] = arr->data[i];
         }
     }
+    free(arr->data);
     arr->data = tmp;
     arr->size = new_size;
 
@@ -1151,26 +1109,32 @@ state copy_part_arr(Massive* first, Massive* second, int start, int end)
     {
         return invalid_range;
     }
-    if(end < 0 || start + end > first->size)
+    if(end < 0 || end >= first->size)
+    {
+        return invalid_range;
+    }
+    if(end < start)
     {
         return invalid_range;
     }
 
-    if(end - start + 1 > second->buf - second->size)
+
+    free(second->data);
+    second->data = NULL;
+    second->data = (int*)malloc(sizeof(int) * (end - start + 1));
+    if(second->data == NULL)
     {
-        second->buf = second->size + end - start + 1;
-        int* tmp = (int*)realloc(second->data, sizeof(int) * second->buf);
-        if(tmp == NULL)
-        {
-            return mem_problem;
-        }
-        second->data = tmp;
+        return mem_problem;
     }
+    second->size = 0;
+    second->buf = end - start + 1;
+
     for(int i = 0; i < end - start + 1; i++)
     {
-        second->data[second->size + i] = first->data[start + i];
+        second->data[i] = first->data[start + i];
+        second->size++;
     }
-    second->size = second->size + end - start + 1;
+
     return well;
 }
 
@@ -1338,7 +1302,7 @@ void print_stats_array(Massive* arr)
 
     printf("Stats of array: %c\n", arr->name);
     printf("size of array: %d\n", arr->size);
-    //TODO сделать вывод всего массива
+
 
     state st = get_max_array(arr, &max, &position);
     if(st != well)
@@ -1379,6 +1343,7 @@ void print_stats_array(Massive* arr)
         return;
     }
     printf("max otklonenie: %f, position: %d, value: %d\n\n", max_otklonenie, position, value);
+    print_all(arr);
 
 }
 

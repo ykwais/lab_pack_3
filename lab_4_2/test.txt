@@ -1,0 +1,36 @@
+Load A, in.txt;
+Print a, all;
+Rand B, 6, -100, 400;
+Print a, all;
+Print b, all;
+
+                            Concat A, B;
+
+Print a, all;
+Print b, all;
+Rand c, 5, -100, 100;
+Print c, all;
+Remove c, 0, 2;
+Print c, all;
+Print b,all;
+Stats b;
+Copy b, 2, 4, c;
+Print c, all;
+Stats c;
+
+Sort C-  ;
+Print c, all;
+Free(c);
+Rand C, 7, -100, 100;
+Print c, all;
+Shuffle c;
+Print c, all;
+Load C, in.txt;
+Print c, all;
+
+Stats c;
+Free(c);
+Rand C, 6, -10, 20;
+Print c, all;
+Print( c, 1, 2;
+
