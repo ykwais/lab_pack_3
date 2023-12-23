@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_4_2/funcs.c" "CMakeFiles/lab_4_2.dir/funcs.c.o" "gcc" "CMakeFiles/lab_4_2.dir/funcs.c.o.d"
   "/mnt/c/Users/fedor/mai_labs_2/lab_pack_3/lab_4_2/main.c" "CMakeFiles/lab_4_2.dir/main.c.o" "gcc" "CMakeFiles/lab_4_2.dir/main.c.o.d"
   )
 

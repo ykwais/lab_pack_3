@@ -32,5 +32,5 @@ Stats c;
 Free(c);
 Rand C, 6, -10, 20;
 Print c, all;
-Print( c, 1, 2;
+Print c, 1, 2;
 

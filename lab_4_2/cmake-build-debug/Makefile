@@ -129,6 +129,30 @@ lab_4_2/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lab_4_2.dir/build.make CMakeFiles/lab_4_2.dir/build
 .PHONY : lab_4_2/fast
 
+funcs.o: funcs.c.o
+.PHONY : funcs.o
+
+# target to build an object file
+funcs.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lab_4_2.dir/build.make CMakeFiles/lab_4_2.dir/funcs.c.o
+.PHONY : funcs.c.o
+
+funcs.i: funcs.c.i
+.PHONY : funcs.i
+
+# target to preprocess a source file
+funcs.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lab_4_2.dir/build.make CMakeFiles/lab_4_2.dir/funcs.c.i
+.PHONY : funcs.c.i
+
+funcs.s: funcs.c.s
+.PHONY : funcs.s
+
+# target to generate assembly for a file
+funcs.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lab_4_2.dir/build.make CMakeFiles/lab_4_2.dir/funcs.c.s
+.PHONY : funcs.c.s
+
 main.o: main.c.o
 .PHONY : main.o
 
@@ -162,6 +186,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... lab_4_2"
+	@echo "... funcs.o"
+	@echo "... funcs.i"
+	@echo "... funcs.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
